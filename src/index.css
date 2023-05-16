@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-icon {
+    @apply !px-2;
+  }
+  .btn-primary {
+    @apply px-3 py-2 bg-primary-100 text-primary-500 font-semibold rounded-xl
+      outline-none select-none cursor-pointer transition-all
+      hover:bg-primary-200
+      active:scale-90 active:bg-primary-300
+      focus:outline-none focus:bg-primary-200;
+  }
+
+  .btn-text {
+    @apply px-3 py-2 bg-gray-100 text-black font-semibold rounded-xl
+      outline-none select-none cursor-pointer transition-all
+      hover:bg-gray-200
+      active:scale-90 active:bg-gray-300
+      focus:outline-none focus:bg-gray-200;
+  }
+
+  .icon {
+    @apply inline-block select-none;
+
+    font-variation-settings: 'FILL' var(--icon-fill, 0),
+      'wght' var(--icon-weight, 400),
+      'GRAD' var(--icon-grade, 0),
+      'opsz' var(--icon-optical, 48);
+  }
+}
+
+@layer utilities {
+  .icon-fill {
+    --icon-fill: 1;
+  }
+  .icon-stroke {
+    --icon-fill: 0;
+  }
+
+  .icon-weight-100 { --icon-weight: 100; }
+  .icon-weight-200 { --icon-weight: 200; }
+  .icon-weight-300 { --icon-weight: 300; }
+  .icon-weight-400 { --icon-weight: 400; }
+  .icon-weight-500 { --icon-weight: 500; }
+  .icon-weight-600 { --icon-weight: 600; }
+  .icon-weight-700 { --icon-weight: 700; }
+
+  .icon-grade-md { --icon-grade: 0; }
+  .icon-grade-lg { --icon-grade: 200; }
+  .icon-grade-sm { --icon-grade: -25; }
+
+  .icon-optical-20 { --icon-optical: 20; }
+  .icon-optical-24 { --icon-optical: 24; }
+  .icon-optical-40 { --icon-optical: 40; }
+  .icon-optical-48 { --icon-optical: 48; }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  -webkit-tap-highlight-color: transparent;
+}
