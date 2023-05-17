@@ -2,21 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: 'Pretendard Variable', system-ui, sans-serif;
+  }
+}
 @layer components {
   .btn-icon {
     @apply !px-2;
   }
   .btn-primary {
-    @apply px-3 py-2 bg-primary-100 text-primary-500 font-semibold rounded-xl
-      outline-none select-none cursor-pointer transition-all
+    @apply px-3 py-2 bg-primary-100 text-primary-500 font-semibold rounded-lg
+      outline-none select-none cursor-pointer transition-all ease-out
       hover:bg-primary-200
       active:scale-90 active:bg-primary-300
       focus:outline-none focus:bg-primary-200;
   }
 
   .btn-text {
-    @apply px-3 py-2 bg-gray-100 text-black font-semibold rounded-xl
-      outline-none select-none cursor-pointer transition-all
+    @apply px-3 py-2 bg-gray-100 text-gray-900 font-semibold rounded-lg
+      outline-none select-none cursor-pointer transition-all ease-out
       hover:bg-gray-200
       active:scale-90 active:bg-gray-300
       focus:outline-none focus:bg-gray-200;
@@ -58,7 +63,7 @@
   .icon-optical-48 { --icon-optical: 48; }
 }
 
-html, body {
+html, body, #root {
   width: 100%;
   height: 100%;
   margin: 0;

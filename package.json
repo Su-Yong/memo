@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "allotment": "^1.19.0",
-    "material-symbols": "^0.5.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "wouter": "^2.10.1"

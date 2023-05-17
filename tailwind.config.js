@@ -20,8 +20,15 @@ export default {
       success: colors.green,
       error: colors.red,
       warn: colors.yellow,
-    }
+    },
+    borderRadius: {
+      sm: '4px',
+      DEFAULT: '8px',
+      md: '10px',
+      lg: '12px',
+      xl: '16px',
+      '2xl': '24px',
+    },
   },
   plugins: [],
-}
-
+};
