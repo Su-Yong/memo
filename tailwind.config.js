@@ -1,4 +1,5 @@
 import colors from 'tailwindcss/colors';
+import typographyPlugin from '@tailwindcss/typography';
 
 delete colors.lightBlue;
 delete colors.warmGray;
@@ -28,7 +29,38 @@ export default {
       lg: '12px',
       xl: '16px',
       '2xl': '24px',
+      full: '9999px',
+    },
+    extend: {
+      typography: {
+        sm: {
+          css: {
+            p: {
+              marginTop: `${1 / 3}em`,
+              marginBottom: `${1 / 3}em`,
+            },
+          },
+        },
+        base: {
+          css: {
+            p: {
+              marginTop: `${1 / 3}em`,
+              marginBottom: `${1 / 3}em`,
+            },
+          },
+        },
+        lg: {
+          css: {
+            p: {
+              marginTop: `${1 / 3}em`,
+              marginBottom: `${1 / 3}em`,
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    typographyPlugin(),
+  ],
 };

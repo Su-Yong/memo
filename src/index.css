@@ -20,7 +20,7 @@
   }
 
   .btn-text {
-    @apply px-3 py-2 bg-gray-100 text-gray-900 font-semibold rounded-lg
+    @apply px-3 py-2 bg-transparent text-gray-900 font-semibold rounded-lg
       outline-none select-none cursor-pointer transition-all ease-out
       hover:bg-gray-200
       active:scale-90 active:bg-gray-300
