@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/node": "^20.2.0"
+  },
+  "scripts": {
+    "dev": "tsc && node index.ts"
+  },
+  "keywords": [],
+  "author": "Su-Yong",
+  "license": "MIT"
+}

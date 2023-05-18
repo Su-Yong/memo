@@ -7,6 +7,7 @@
     font-family: 'Pretendard Variable', system-ui, sans-serif;
   }
 }
+
 @layer components {
   .btn-icon {
     @apply !px-2;
@@ -61,6 +62,12 @@
   .icon-optical-24 { --icon-optical: 24; }
   .icon-optical-40 { --icon-optical: 40; }
   .icon-optical-48 { --icon-optical: 48; }
+}
+
+:root {
+
+  --focus-border: theme('colors.primary.500');
+  --separator-border: theme('colors.gray.300');
 }
 
 html, body, #root {

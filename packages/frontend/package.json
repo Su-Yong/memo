@@ -1,12 +1,14 @@
 {
-  "name": "memo",
-  "private": true,
-  "version": "0.0.0",
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:frontend": "npm run dev -w frontend",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tiptap/pm": "^2.0.3",
@@ -33,8 +35,7 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.2"
   },
-  "workspaces": [
-    "packages/frontend",
-    "packages/backend"
-  ]
+  "keywords": [],
+  "author": "Su-Yong",
+  "license": "MIT"
 }

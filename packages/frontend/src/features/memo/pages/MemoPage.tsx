@@ -19,7 +19,7 @@ const MemoPage = () => {
           <div className={'rounded-full w-8 h-8 overflow-hidden'}>
             <img src="https://picsum.photos/200" />
           </div>
-          <div className={'bg-gray-400 w-full mx-4 h-[1px]'}></div>
+          <div className={'bg-gray-300 px-3 h-[1px]'}></div>
           <button className={'btn-text btn-icon flex'}>
             <i className={'material-symbols-outlined icon'}>
               folder
