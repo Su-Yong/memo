@@ -2,8 +2,8 @@
 
 import chalk from 'chalk';
 import dayjs from 'dayjs';
+import { LogType } from './types.js';
 
-type LogType = 'debug' | 'verbose' | 'warn' | 'error' | 'info';
 const LogColor = {
   debug: 'inverse',
   verbose: 'dim',
@@ -11,9 +11,8 @@ const LogColor = {
   error: 'red',
   info: 'blue',
 } as const;
-
-class Logger {
-  private timestampFormat = 'YYYY-MM-DD hh:mm:ss';
+class ConsoleLogger {
+  protected timestampFormat = 'YYYY-MM-DD hh:mm:ss';
 
   log(type: LogType, ...messages: any[]) {
     const timestamp = chalk.dim(`[${this.getTimestamp()}]`);
@@ -52,9 +51,9 @@ class Logger {
     this.timestampFormat = format;
   }
 
-  private getTimestamp() {
+  protected getTimestamp() {
     return dayjs().format(this.timestampFormat);
   }
 }
 
-export default Logger;
+export default ConsoleLogger;

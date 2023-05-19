@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { Config } from 'src/utils/Config.js';
-import Logger from '../utils/Logger.js';
+import { Config } from '../utils/Config.js';
+import { Logger } from '../utils/logger/index.js';
 
 export interface Context {
   config: Config;

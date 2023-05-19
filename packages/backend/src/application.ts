@@ -4,16 +4,20 @@ import dotenv from 'dotenv';
 import { Object } from 'ts-toolbelt';
 
 import router from './controllers/router.js';
-import Logger from './utils/Logger.js';
 import { Config, mergeConfig } from './utils/Config.js';
 import { injectContext } from './middlewares/Context.js';
 import { ExceptionHandler } from './middlewares/ExceptionHandler.js';
 import { LogHandler } from './middlewares/Logger.js';
+import { Logger } from './utils/logger/index.js';
 
 class Application {
   private app: Express | null = null;
   private logger: Logger | null = null;
-  private config: Config | null = null;
+  private _config: Config | null = null;
+
+  get config() {
+    return this._config;
+  }
 
   initConfig() {
     dotenv.config();
@@ -22,14 +26,19 @@ class Application {
       server: {
         host: process.env.SERVER_HOST,
         port: Number.isFinite(Number(process.env.SERVER_PORT)) ? Number(process.env.SERVER_PORT) : undefined,
-      }
+      },
+      logger: {
+        path: process.env.LOGGER_PATH,
+        timestampFormat: process.env.LOGGER_TIMESTAMP_FORMAT,
+        fileFormat: process.env.LOGGER_FILE_FORMAT,
+      },
     };
 
-    this.config = mergeConfig(customConfig);
+    this._config = mergeConfig(customConfig);
   }
 
-  initLogger() {
-    this.logger = new Logger();
+  initLogger(logger: Logger) {
+    this.logger = logger;
   }
 
   initServer() {
