@@ -9,17 +9,20 @@ import { injectContext } from './middlewares/Context.js';
 import { ExceptionHandler } from './middlewares/ExceptionHandler.js';
 import { LogHandler } from './middlewares/Logger.js';
 import { Logger } from './utils/logger/index.js';
+import { DataSource } from 'typeorm';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions.js';
 
 class Application {
   private app: Express | null = null;
   private logger: Logger | null = null;
   private _config: Config | null = null;
+  private dataSource: DataSource | null = null;
 
   get config() {
     return this._config;
   }
 
-  initConfig() {
+  loadConfig() {
     dotenv.config();
 
     const customConfig: Object.Partial<Config, 'deep'> = {
@@ -32,24 +35,52 @@ class Application {
         timestampFormat: process.env.LOGGER_TIMESTAMP_FORMAT,
         fileFormat: process.env.LOGGER_FILE_FORMAT,
       },
+      database: {
+        host: process.env.DATABASE_HOST,
+        port: Number.isFinite(Number(process.env.DATABASE_PORT)) ? Number(process.env.DATABASE_PORT) : undefined,
+        username: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_DATABASE,
+      },
     };
 
     this._config = mergeConfig(customConfig);
+
+    this.logger?.v('Config is loaded');
   }
 
   initLogger(logger: Logger) {
     this.logger = logger;
+
+    this.logger.v('Logger is initialized');
+  }
+
+  async initDatabase(dbOptions: Omit<MysqlConnectionOptions, 'type'>) {
+    this.dataSource = new DataSource({
+      type: 'mariadb',
+      ...dbOptions,
+      entities: [
+        'src/**/models/*.model.js',
+        'dist/**/models/*.model.js',
+      ],
+    });
+
+    await this.dataSource.initialize();
+
+    this.logger?.v('Database is initialized');
   }
 
   initServer() {
     if (!this.logger) throw Error('logger is not initialized');
     if (!this.config) throw Error('config is not loaded');
+    if (!this.dataSource) throw Error('database is not initialized');
 
     this.app = express();
 
     this.app.use(injectContext({
       config: this.config,
       logger: this.logger,
+      db: this.dataSource,
     }));
     this.app.use(ExceptionHandler);
     this.app.use(LogHandler);

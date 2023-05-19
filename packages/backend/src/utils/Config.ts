@@ -4,12 +4,21 @@ export interface Config {
   server: {
     port: number;
     host: string;
-  }
+  };
+
   logger: {
     timestampFormat: string;
     fileFormat: string;
     path: string;
-  }
+  };
+
+  database: {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    database: string;
+  };
 }
 
 export const defaultConfig: Config = {
@@ -21,6 +30,13 @@ export const defaultConfig: Config = {
     timestampFormat: 'YYYY-MM-DD HH:mm:ss',
     fileFormat: 'YYYY-MM-DD',
     path: './logs',
+  },
+  database: {
+    host: 'localhost',
+    port: 3306,
+    username: 'memo',
+    password: 'password',
+    database: 'memo',
   },
 };
 
