@@ -4,9 +4,8 @@ import Application from './application.js';
   const app = new Application();
 
   app.initLogger();
+  app.initConfig();
   app.initServer();
-
-  app.loadConfig();
 
   app.start();
 })().catch((err) => {
