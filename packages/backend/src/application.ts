@@ -11,6 +11,7 @@ import { LogHandler } from './middlewares/Logger.js';
 import { Logger } from './utils/logger/index.js';
 import { DataSource } from 'typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions.js';
+import bodyParser from 'body-parser';
 
 class Application {
   private app: Express | null = null;
@@ -59,6 +60,7 @@ class Application {
     this.dataSource = new DataSource({
       type: 'mariadb',
       ...dbOptions,
+      synchronize: true,
       entities: [
         'src/**/models/*.model.js',
         'dist/**/models/*.model.js',
@@ -77,15 +79,19 @@ class Application {
 
     this.app = express();
 
+    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.urlencoded({ extended: true }))
+
     this.app.use(injectContext({
       config: this.config,
       logger: this.logger,
       db: this.dataSource,
     }));
-    this.app.use(ExceptionHandler);
     this.app.use(LogHandler);
 
     this.app.use('/', router);
+
+    this.app.use(ExceptionHandler);
   }
 
   start() {

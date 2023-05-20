@@ -5,11 +5,7 @@ export const ExceptionHandler = (err: Error, request: Request, response: Respons
     return next(err);
   }
 
-  try {
-    next();
-  } catch (err) {
-    response.status(500)
-    response.send({ error: err });
-    request.logger?.e('Internal Server Error', err);
-  }
+  response.status(500)
+  response.json({ code: 'INTERNEL_SERVER_ERROR', status: 500, error: err });
+  request.logger?.e('Internal Server Error', err);
 };
