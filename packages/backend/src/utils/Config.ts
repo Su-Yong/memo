@@ -19,6 +19,9 @@ export interface Config {
     password: string;
     database: string;
   };
+  security: {
+    secret: string;
+  }
 }
 
 export const defaultConfig: Config = {
@@ -37,6 +40,9 @@ export const defaultConfig: Config = {
     username: 'memo',
     password: 'password',
     database: 'memo',
+  },
+  security: {
+    secret: 'secret',
   },
 };
 

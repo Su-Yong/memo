@@ -1,18 +1,24 @@
 import { createController } from '../../../controllers/Controller.js';
 import { User } from '../models/User.model.js';
-import { createUserSchema } from '../models/User.schema.js';
+import UserSchema from '../models/User.schema.js';
 
-export const createUser = createController(async ({ useRequestBody, useRepository, useResponse }) => {
-  const body = useRequestBody(createUserSchema);
+import { hash } from 'bcrypt';
+import HttpError from 'http-errors';
+
+export const createUser = createController(async ({ useRequestBody, useRepository, useResponse, useConfig }) => {
+  const body = useRequestBody(UserSchema.create);
   const repository = useRepository(User);
+
+  const checkAlreadyExist = await repository.findOneBy({ email: body.email });
+  if (checkAlreadyExist) throw HttpError(409, 'Email is already registered');
 
   const user = new User();
   user.email = body.email;
-  user.password = body.password;
+  user.password = await hash(body.password, 16);
   user.name = body.name;
-  user.role = 'user';
+  user.permission = 'member';
 
   const result = await repository.save(user);
 
-  useResponse(201, result);
+  useResponse(201, UserSchema.toResponse(result));
 });

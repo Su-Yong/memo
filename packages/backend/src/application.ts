@@ -43,6 +43,9 @@ class Application {
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_DATABASE,
       },
+      security: {
+        secret: process.env.SECURITY_SECRET,
+      },
     };
 
     this._config = mergeConfig(customConfig);
@@ -60,6 +63,7 @@ class Application {
     this.dataSource = new DataSource({
       type: 'mariadb',
       ...dbOptions,
+      logging: true,
       synchronize: true,
       entities: [
         'src/**/models/*.model.js',

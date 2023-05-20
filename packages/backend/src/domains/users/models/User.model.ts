@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+
+export type UserPermission = 'admin' | 'member' | 'guest';
 
 @Entity()
 export class User {
@@ -14,6 +16,10 @@ export class User {
     @Column()
     name!: string;
 
-    @Column()
-    role!: string;
+    @Column({
+        type: 'enum',
+        enum: ['admin', 'member', 'guest'],
+        default: 'guest'
+    })
+    permission!: UserPermission;
 }

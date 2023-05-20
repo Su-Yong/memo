@@ -7,8 +7,9 @@ import { O } from 'ts-toolbelt';
 
 import { ContextRequest, createMiddleware } from '../middlewares/Middleware.js';
 import { EntityTarget, ObjectLiteral, Repository } from 'typeorm';
+import { Config } from '../utils/Config.js';
 
-export interface CreateControllerContextOptions {
+export interface ControllerHookContext {
   request: ContextRequest;
   response: Response;
   next: NextFunction;
@@ -16,11 +17,14 @@ export interface CreateControllerContextOptions {
 export interface ControllerContext {
   useRequest: <T = ContextRequest>(getter?: (request: ContextRequest) => T) => T;
   useRequestBody: <Schema extends AnyZodObject = AnyZodObject>(schema?: Schema) => z.infer<Schema>;
+  useConfig: () => Config;
   useDB: () => ContextRequest['db'];
   useRepository: <Entity extends ObjectLiteral>(entity: EntityTarget<Entity>) => Repository<Entity>;
   useResponse: (statusCode: number, response?: string | O.Object) => void;
+
+  context: ControllerHookContext;
 }
-export const createControllerContext = (options: CreateControllerContextOptions): ControllerContext => {
+export const createControllerContext = (options: ControllerHookContext): ControllerContext => {
   const useRequest: ControllerContext['useRequest'] = (getter = (it) => it as any) => getter(options.request);
   const useRequestBody: ControllerContext['useRequestBody'] = (schema) => {
     const body = useRequest((it) => it.body);
@@ -35,6 +39,7 @@ export const createControllerContext = (options: CreateControllerContextOptions)
 
     return body;
   };
+  const useConfig: ControllerContext['useConfig'] = () => useRequest((it) => it.config);
   const useDB: ControllerContext['useDB'] = () => useRequest((it) => it.db);
   const useRepository: ControllerContext['useRepository'] = (entity) => {
     const db = useDB();
@@ -52,9 +57,12 @@ export const createControllerContext = (options: CreateControllerContextOptions)
   return {
     useRequest,
     useRequestBody,
+    useConfig,
     useDB,
     useRepository,
     useResponse,
+
+    context: options,
   };
 };
 

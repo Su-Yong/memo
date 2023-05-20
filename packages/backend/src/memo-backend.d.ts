@@ -14,6 +14,8 @@ declare namespace NodeJS {
       DATABASE_USERNAME: string | undefined;
       DATABASE_PASSWORD: string | undefined;
       DATABASE_DATABASE: string | undefined;
+
+      SECURITY_SECRET: string | undefined;
     }
   }
 }
