@@ -1,15 +1,29 @@
-import { useState } from 'react';
-import { Router, Route } from 'wouter';
+import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 
-import MainPage from './features/main/pages/MainPage';
 import MemoPage from './features/memo/pages/MemoPage';
+import LoginPage from './features/login/pages/LoginPage';
+import { useAtomValue } from 'jotai';
+import { accessToken } from './store/auth';
+
 
 const App = () => {
+  const isLogin = useAtomValue(accessToken);
+
   return (
-    <Router>
-      <Route path={'/'} component={() => <MainPage />} />
-      <Route path={'/memo'} component={() => <MemoPage />} />
-    </Router>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path={'/'}
+          element={
+            isLogin
+              ? <Navigate replace to={'/memo'} />
+              : <Navigate replace to={'/login'} />
+          }
+        />
+        <Route path={'/memo'} element={<MemoPage />} />
+        <Route path={'/login'} element={<LoginPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
