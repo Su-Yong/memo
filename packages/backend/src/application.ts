@@ -93,7 +93,7 @@ class Application {
     }));
     this.app.use(LogHandler);
 
-    this.app.use('/', router);
+    this.app.use('/api', router);
 
     this.app.use(ExceptionHandler);
   }
@@ -107,7 +107,7 @@ class Application {
 
     this.app.listen(this.config.server.port, this.config.server.host, () => {
       this.logger?.i(`Server is running at ${this.config?.server.host}:${this.config?.server.port}`);
-      this.logger?.d('Server Config:', JSON.stringify(this.config, null, 2));
+      // this.logger?.d('Server Config:', JSON.stringify(this.config, null, 2));
     });
   }
 }

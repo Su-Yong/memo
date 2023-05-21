@@ -13,7 +13,7 @@ import 'reflect-metadata';
   app.initLogger(logger);
 
   await app.initDatabase({
-    host: app.config.database.host, 
+    host: app.config.database.host,
     port: app.config.database.port,
     username: app.config.database.username,
     password: app.config.database.password,

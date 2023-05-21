@@ -14,7 +14,7 @@ export const createUser = createController(async ({ useRequestBody, useRepositor
 
   const user = new User();
   user.email = body.email;
-  user.password = await hash(body.password, 16);
+  user.password = await hash(body.password, 12);
   user.name = body.name;
   user.permission = 'member';
 

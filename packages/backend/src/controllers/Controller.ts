@@ -17,6 +17,7 @@ export interface ControllerHookContext {
 export interface ControllerContext {
   useRequest: <T = ContextRequest>(getter?: (request: ContextRequest) => T) => T;
   useRequestBody: <Schema extends AnyZodObject = AnyZodObject>(schema?: Schema) => z.infer<Schema>;
+  useParams: () => Record<string, string>;
   useConfig: () => Config;
   useDB: () => ContextRequest['db'];
   useRepository: <Entity extends ObjectLiteral>(entity: EntityTarget<Entity>) => Repository<Entity>;
@@ -39,6 +40,7 @@ export const createControllerContext = (options: ControllerHookContext): Control
 
     return body;
   };
+  const useParams: ControllerContext['useParams'] = () => useRequest((it) => it.params);
   const useConfig: ControllerContext['useConfig'] = () => useRequest((it) => it.config);
   const useDB: ControllerContext['useDB'] = () => useRequest((it) => it.db);
   const useRepository: ControllerContext['useRepository'] = (entity) => {
@@ -57,6 +59,7 @@ export const createControllerContext = (options: ControllerHookContext): Control
   return {
     useRequest,
     useRequestBody,
+    useParams,
     useConfig,
     useDB,
     useRepository,
