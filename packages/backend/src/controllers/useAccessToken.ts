@@ -14,8 +14,11 @@ declare module "express" {
 export const useAccessToken = (context: ControllerHookContext) => {
   const { request } = context;
 
-  const accessToken = request.headers.authorization;
-  if (!accessToken) throw createHttpError(401, 'No access token provided');
+  const auth = request.headers.authorization;
+  if (!auth) throw createHttpError(401, 'No access token provided');
+  const [authType, accessToken] = auth.split(' ');
+
+  if (authType !== 'Bearer') throw createHttpError(401, 'Invalid access token type');
 
   const { secret } = request.config.security;
   if (!secret) throw createHttpError(500, 'No secret provided');

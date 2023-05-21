@@ -21,12 +21,9 @@ export const createWorkspace = createController(async ({ context, useRepository,
   workspace.members = [user];
 
   const result = await workspaceRepository.save(workspace);
-  // await userRepository.update(user.id, {
-  //   workspaces: Promise.resolve([...(await user.workspaces), result]),
-  // });
 
   useResponse(
     201,
-    await WorkspaceSchema.toResponse(result, true),
+    await WorkspaceSchema.toResponse(result, { withMembers: true, withAvailableActions: user }),
   );
 });

@@ -21,7 +21,7 @@ export const getWorkspace = createController(async ({ context, useRepository, us
       relations: ['members', 'owner'],
     });
 
-    const result = workspaces.map((workspace) => WorkspaceSchema.toResponse(workspace, true));
+    const result = workspaces.map((workspace) => WorkspaceSchema.toResponse(workspace, { withMembers: true, withAvailableActions: token }));
 
     useResponse(
       200,
@@ -40,7 +40,7 @@ export const getWorkspace = createController(async ({ context, useRepository, us
 
     useResponse(
       200,
-      await WorkspaceSchema.toResponse(workspace, true),
+      await WorkspaceSchema.toResponse(workspace, { withMembers: true, withAvailableActions: token }),
     );
   }
 
