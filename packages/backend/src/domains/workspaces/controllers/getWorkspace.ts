@@ -30,8 +30,13 @@ export const getWorkspace = createController(async ({ context, useRepository, us
   } else {
     const repository = useRepository(Workspace);
 
-    const workspace = await repository.findOneBy({ id: Number(params.id) });
+    const workspace = await repository.findOne({
+      where: { id: Number(params.id) },
+      relations: ['members', 'owner'],
+    });
+
     if (!workspace) throw createHttpError(404, 'Workspace not found');
+    if (!await workspace.canRead(token)) throw createHttpError(403, 'You are not allowed to read this workspace');
 
     useResponse(
       200,
