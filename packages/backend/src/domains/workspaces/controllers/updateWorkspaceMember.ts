@@ -28,7 +28,11 @@ export const addMemberToWorkspace = createController(async ({ context, useReposi
   const member = await userRepository.findOneBy({ id: body.memberId });
   if (!member) throw createHttpError(404, 'Member not found');
 
-  workspace.members = [...(await workspace.members ?? []), member];
+  const originalMembers = await workspace.members ?? [];
+  if (originalMembers.some((it) => it.id === user.id)) throw createHttpError(403, 'this member already exists');
+
+  workspace.members = [...originalMembers, member];
+  workspace.mark(user);
 
   const result = await workspaceRepository.save(workspace);
 
@@ -68,6 +72,8 @@ export const removeMemberToWorkspace = createController(async ({ context, useRep
   if (!member) throw createHttpError(404, 'Member not found');
 
   workspace.members = (await workspace.members ?? []).filter((m) => m.id !== member.id);
+  workspace.mark(user);
+
   const result = await workspaceRepository.save(workspace);
 
   useResponse(

@@ -1,5 +1,5 @@
 import z from 'zod';
-import { User } from './User.model.js';
+import { IUser } from './User.model.js';
 
 class UserSchema {
   static create = z.object({
@@ -20,7 +20,7 @@ class UserSchema {
     permission: z.enum(['admin', 'member', 'guest']),
   });
 
-  static toResponse(user: User): z.infer<typeof this.response> {
+  static toResponse(user: IUser): z.infer<typeof this.response> {
     return {
       id: user.id,
       email: user.email,

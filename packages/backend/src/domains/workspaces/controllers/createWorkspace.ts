@@ -19,6 +19,7 @@ export const createWorkspace = createController(async ({ context, useRepository,
   workspace.description = body.description;
   workspace.owner = user;
   workspace.members = [user];
+  workspace.mark(user);
 
   const result = await workspaceRepository.save(workspace);
 

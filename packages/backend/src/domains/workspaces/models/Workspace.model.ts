@@ -1,13 +1,13 @@
 import UserSchema from '../../users/models/User.schema.js';
 import { User } from '../../users/models/User.model.js';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, BaseEntity, JoinColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, JoinColumn, SaveOptions } from 'typeorm'
 import { z } from 'zod';
-import { AvailableAction } from 'src/models/Common.js';
+import { AvailableAction, Modifiable } from '../../../models/Common.js';
 
 export type WorkspaceAction = AvailableAction | 'VISIBLE' | 'EDITABLE';
 
 @Entity()
-export class Workspace extends BaseEntity {
+export class Workspace extends Modifiable {
   @PrimaryGeneratedColumn()
   id!: number;
 

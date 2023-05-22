@@ -1,7 +1,7 @@
 import z from 'zod';
 import { Workspace } from './Workspace.model.js';
 import UserSchema from '../../users/models/User.schema.js';
-import { AvailableActionsSchema } from 'src/models/Common.js';
+import { ModifiableSchema } from '../../../models/Common.js';
 
 export const WorkspaceActionsSchema = z.enum(['CREATE', 'READ', 'UPDATE', 'DELETE', 'VISIBLE', 'EDITABLE']).array();
 
@@ -9,7 +9,7 @@ interface ToWorkspaceResponseOptions {
   withMembers?: boolean;
   withAvailableActions?: z.infer<typeof UserSchema.response>;
 }
-class WorkspaceSchema {
+class WorkspaceSchema extends ModifiableSchema {
   static create = z.object({
     name: z.string().min(2),
     description: z.string().optional(),
@@ -26,7 +26,7 @@ class WorkspaceSchema {
     editableRange: z.enum(['public', 'link', 'member', 'owner']).optional(),
   });
 
-  static response = z.object({
+  static override response = ModifiableSchema.response.extend({
     id: z.number(),
     name: z.string(),
     description: z.string().optional(),
@@ -40,12 +40,13 @@ class WorkspaceSchema {
     memberId: z.number(),
   });
 
-  static async toResponse(workspace: Workspace, { withMembers = false, withAvailableActions = undefined }: ToWorkspaceResponseOptions = {}): Promise<z.infer<typeof this.response>> {
+  static override async toResponse(workspace: Workspace, { withMembers = false, withAvailableActions = undefined }: ToWorkspaceResponseOptions = {}): Promise<z.infer<typeof this.response>> {
     const result: z.infer<typeof this.response> = {
       id: workspace.id,
       name: workspace.name,
       description: workspace.description,
       image: workspace.image,
+      ...await super.toResponse(workspace),
     };
 
     if (withMembers) {

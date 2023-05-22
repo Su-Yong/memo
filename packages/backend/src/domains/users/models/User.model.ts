@@ -4,7 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 't
 export type UserPermission = 'admin' | 'member' | 'guest';
 
 @Entity()
-export class User {
+export class User implements IUser {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -26,4 +26,12 @@ export class User {
 
   @ManyToMany(() => Workspace, workspace => workspace.members)
   workspaces!: Promise<Workspace[]>;
+}
+
+export interface IUser {
+  id: number;
+  email: string;
+  password: string;
+  name: string;
+  permission: UserPermission;
 }

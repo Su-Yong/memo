@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+import { User } from '../../users/models/User.model.js';
 import { createController } from '../../../controllers/Controller.js';
 import { useAccessToken } from '../../../controllers/useAccessToken.js';
 import { Workspace } from '../models/Workspace.model.js';
@@ -8,7 +9,11 @@ export const updateWorkspace = createController(async ({ context, useRepository,
   const token = useAccessToken(context);
   const body = useRequestBody(WorkspaceSchema.update);
   const workspaceRepository = useRepository(Workspace);
+  const userRepository = useRepository(User);
   const params = useParams();
+
+  const user = await userRepository.findOneBy({ id: token.id });
+  if (!user) throw createHttpError(404, 'Workspace not found');
 
   const workspaceId = Number(params.id);
   const workspace = await workspaceRepository.findOne({
@@ -26,6 +31,7 @@ export const updateWorkspace = createController(async ({ context, useRepository,
   if (body.image) workspace.image = body.image;
   if (body.visibleRange) workspace.visibleRange = body.visibleRange;
   if (body.editableRange) workspace.editableRange = body.editableRange;
+  workspace.mark(user);
 
   const result = await workspaceRepository.save(workspace);
 
