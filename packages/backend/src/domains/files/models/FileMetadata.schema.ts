@@ -10,12 +10,14 @@ class FileMetadataSchema extends CreatableSchema {
   static override response = CreatableSchema.response.extend({
     id: z.string(),
     fileName: z.string(),
+    md5: z.string(),
   });
 
   static override async toResponse(fileMetadata: FileMetadata): Promise<z.infer<typeof this.response>> {
     return {
       id: fileMetadata.id,
       fileName: fileMetadata.fileName,
+      md5: fileMetadata.md5,
       ...await super.toResponse(fileMetadata),
     };
   }

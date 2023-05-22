@@ -53,6 +53,7 @@ export const createControllerContext = (options: ControllerHookContext): Control
     options.response.status(statusCode);
 
     if (response !== undefined) options.response.json(response);
+    else options.response.sendStatus(statusCode);
   };
 
 

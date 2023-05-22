@@ -20,6 +20,4 @@ export const getFile = createController(async ({ context, useConfig, useParams }
       }
     });
   });
-
-  console.log('test')
 });
