@@ -21,5 +21,6 @@ export const loginUser = createController(async ({ useRequestBody, useRepository
 
   useResponse(200, {
     accessToken: token,
+    user: UserSchema.toResponse(user),
   });
 });

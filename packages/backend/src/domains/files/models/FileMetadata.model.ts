@@ -12,11 +12,14 @@ export class FileMetadata extends Creatable {
   fileName!: string;
 
   @Column()
+  mimeType!: string;
+
+  @Column()
   md5!: string;
 
   async canUpdate(user: z.infer<typeof UserSchema.response>) {
     return user.permission === 'admin' || user.id === this.createdBy?.id;
   }
-  
+
   canDelete = this.canUpdate;
 }

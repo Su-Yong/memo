@@ -1,5 +1,7 @@
 import { Workspace } from '../../workspaces/models/Workspace.model.js';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
+import UserSchema from './User.schema.js';
+import { z } from 'zod';
 
 export type UserPermission = 'admin' | 'member' | 'guest';
 
@@ -17,6 +19,9 @@ export class User implements IUser {
   @Column()
   name!: string;
 
+  @Column({ nullable: true })
+  profile?: string;
+
   @Column({
     type: 'enum',
     enum: ['admin', 'member', 'guest'],
@@ -26,6 +31,10 @@ export class User implements IUser {
 
   @ManyToMany(() => Workspace, workspace => workspace.members)
   workspaces!: Promise<Workspace[]>;
+
+  async canUpdate(user: z.infer<typeof UserSchema.response>) {
+    return user.id === this.id || user.permission === 'admin';
+  }
 }
 
 export interface IUser {
@@ -33,5 +42,6 @@ export interface IUser {
   email: string;
   password: string;
   name: string;
+  profile?: string;
   permission: UserPermission;
 }

@@ -10,6 +10,7 @@ class FileMetadataSchema extends CreatableSchema {
   static override response = CreatableSchema.response.extend({
     id: z.string(),
     fileName: z.string(),
+    mimeType: z.string(),
     md5: z.string(),
   });
 
@@ -17,6 +18,7 @@ class FileMetadataSchema extends CreatableSchema {
     return {
       id: fileMetadata.id,
       fileName: fileMetadata.fileName,
+      mimeType: fileMetadata.mimeType,
       md5: fileMetadata.md5,
       ...await super.toResponse(fileMetadata),
     };

@@ -5,7 +5,7 @@ import UserSchema from '../models/User.schema.js';
 import { hash } from 'bcrypt';
 import HttpError from 'http-errors';
 
-export const createUser = createController(async ({ useRequestBody, useRepository, useResponse, useConfig }) => {
+export const createUser = createController(async ({ useRequestBody, useRepository, useResponse }) => {
   const body = useRequestBody(UserSchema.create);
   const repository = useRepository(User);
 

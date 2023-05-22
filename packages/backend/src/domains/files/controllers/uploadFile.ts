@@ -74,6 +74,7 @@ export const uploadFile = [
     fileMetadata.id = request.file.filename;
     fileMetadata.fileName = body.fileName ?? request.file.originalname;
     fileMetadata.md5 = hash;
+    fileMetadata.mimeType = request.file.mimetype;
     fileMetadata.mark(user);
 
     const result = await fileMetadataRepository.save(fileMetadata);

@@ -6,6 +6,14 @@ class UserSchema {
     email: z.string().email(),
     password: z.string().min(8),
     name: z.string(),
+    profile: z.string().optional(),
+  });
+
+  static update = z.object({
+    email: z.string().email().optional(),
+    password: z.string().min(8).optional(),
+    name: z.string().optional(),
+    profile: z.string().optional(),
   });
 
   static login = z.object({
@@ -17,6 +25,7 @@ class UserSchema {
     id: z.number(),
     email: z.string().email(),
     name: z.string(),
+    profile: z.string().optional(),
     permission: z.enum(['admin', 'member', 'guest']),
   });
 
@@ -25,6 +34,7 @@ class UserSchema {
       id: user.id,
       email: user.email,
       name: user.name,
+      profile: user.profile,
       permission: user.permission,
     };
   }
