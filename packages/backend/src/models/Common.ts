@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { IUser } from '../domains/users/models/User.model.js';
-import { Entity, CreateDateColumn, UpdateDateColumn, OneToOne, BaseEntity, JoinColumn } from 'typeorm';
+import { Entity, CreateDateColumn, UpdateDateColumn, BaseEntity, JoinColumn, ManyToOne } from 'typeorm';
 import UserSchema from '../domains/users/models/User.schema.js';
 
 @Entity()
@@ -8,7 +8,7 @@ export class Creatable extends BaseEntity {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @OneToOne('User', { eager: true, nullable: true })
+  @ManyToOne('User', { eager: true, nullable: true })
   @JoinColumn()
   createdBy?: IUser;
 
@@ -22,7 +22,7 @@ export class Modifiable extends Creatable {
   @UpdateDateColumn()
   lastModifiedAt!: Date;
 
-  @OneToOne('User', { eager: true, nullable: true })
+  @ManyToOne('User', { eager: true, nullable: true })
   @JoinColumn()
   lastModifiedBy?: IUser;
 

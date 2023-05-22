@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
+import fs from 'node:fs/promises';
 
 import { Object } from 'ts-toolbelt';
 
@@ -30,6 +31,7 @@ class Application {
       server: {
         host: process.env.SERVER_HOST,
         port: Number.isFinite(Number(process.env.SERVER_PORT)) ? Number(process.env.SERVER_PORT) : undefined,
+        filePath: process.env.SERVER_FILE_PATH,
       },
       logger: {
         path: process.env.LOGGER_PATH,
@@ -72,6 +74,11 @@ class Application {
     });
 
     await this.dataSource.initialize();
+    if (this.config) {
+      await fs.mkdir(this.config.server.filePath, { recursive: true }).catch(() => null);
+    } else {
+      this.logger?.w('database is initialized but file path is not set');
+    }
 
     this.logger?.v('Database is initialized');
   }

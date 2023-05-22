@@ -1,5 +1,5 @@
 import { Workspace } from '../../workspaces/models/Workspace.model.js';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
 
 export type UserPermission = 'admin' | 'member' | 'guest';
 
