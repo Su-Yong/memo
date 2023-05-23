@@ -19,6 +19,13 @@
       active:scale-90 active:bg-primary-300
       focus:outline-none focus:bg-primary-200;
   }
+  .btn-error {
+    @apply px-3 py-2 bg-error-100 text-error-500 font-semibold rounded-lg
+      outline-none select-none cursor-pointer transition-all ease-out
+      hover:bg-error-200
+      active:scale-90 active:bg-error-300
+      focus:outline-none focus:bg-error-200;
+  }
 
   .btn-text {
     @apply px-3 py-2 bg-transparent text-gray-900 font-semibold rounded-lg
@@ -28,9 +35,14 @@
       focus:outline-none focus:bg-gray-200;
   }
 
+  .btn-disabled {
+    @apply px-3 py-2 bg-gray-400 text-gray-100 font-semibold rounded-lg
+      outline-none select-none;
+  }
+
   .input {
     @apply outline-none bg-gray-100 text-gray-900 rounded-lg ring-primary-500 ring-0
-      py-3 px-2
+      py-3 px-2 invalid:ring-error-500
       transition-all ease-out
       hover:bg-gray-200
       focus:ring-2
@@ -43,6 +55,33 @@
       'wght' var(--icon-weight, 400),
       'GRAD' var(--icon-grade, 0),
       'opsz' var(--icon-optical, 48);
+  }
+
+  .spinner-shape {
+    fill: none;
+    stroke-width: var(--stroke-width);
+    stroke-linecap: round;
+    stroke-dasharray: var(--dash-length);
+    stroke-dashoffset: var(--dash-length);
+
+    animation: spinner-shape 1.4s infinite;
+
+    transform-origin: center center;
+  }
+
+  @keyframes spinner-shape {
+    0% {
+      stroke-dashoffset: var(--dash-length);
+      rotate: 0deg;
+    }
+    50% {
+      stroke-dashoffset: 10;
+      rotate: 45deg;
+    }
+    100% {
+      stroke-dashoffset: var(--dash-length);
+      rotate: 360deg;
+    }
   }
 }
 
