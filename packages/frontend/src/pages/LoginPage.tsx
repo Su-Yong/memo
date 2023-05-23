@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai';
-import { ACCESS_TOKEN } from '../../../store/auth';
+import { ACCESS_TOKEN } from '../store/auth';
 import { useRef } from 'react';
-import { loginUser } from '../../../api/user';
+import { loginUser } from '../api/user';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {

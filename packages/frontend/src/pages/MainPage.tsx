@@ -1,11 +1,11 @@
-import { Link } from 'wouter';
+import { Link } from 'react-router-dom';
 
 const MainPage = () => {
   return (
     <div className={'container mx-auto'}>
       MainPage
 
-      <Link href={'/memo'}>
+      <Link to={'/memo'}>
         toMemo
       </Link>
     </div>

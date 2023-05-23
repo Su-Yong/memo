@@ -15,7 +15,7 @@ const Editor = () => {
     autofocus: true,
   });
 
-  return (  
+  return (
     <EditorContent editor={editor} className={'w-full h-full px-4 py-2'} />
   );
 };

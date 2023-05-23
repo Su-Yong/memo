@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 
-import MemoPage from './features/memo/pages/MemoPage';
-import LoginPage from './features/login/pages/LoginPage';
+import MemoPage from './pages/MemoPage';
+import LoginPage from './pages/LoginPage';
 import { useAtomValue } from 'jotai';
 import { useHydrateAtoms } from 'jotai/react/utils'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

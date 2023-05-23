@@ -4,13 +4,13 @@ import MemoTreeItem from '../components/MemoTreeItem';
 import MemoHeader from '../components/MemoHeader';
 import Editor from '../containers/Editor';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchWorkspace } from '../../../api/workspace';
+import { fetchWorkspace } from '../api/workspace';
 import { useCallback, useState } from 'react';
-import { Workspace } from '../../../models/Workspace';
-import { uploadFile } from '../../../api/file';
+import { Workspace } from '../models/Workspace';
+import { uploadFile } from '../api/file';
 import { useAtomValue } from 'jotai';
-import { CLIENT_USER } from '../../../store/auth';
-import { updateUser } from '../../../api/user';
+import { CLIENT_USER } from '../store/auth';
+import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
 
 const MemoPage = () => {
