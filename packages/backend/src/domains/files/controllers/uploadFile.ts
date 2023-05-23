@@ -1,6 +1,5 @@
 import { createController } from '../../../controllers/Controller.js';
 import multer from 'multer';
-import createHttpError from 'http-errors';
 import { useAccessToken } from '../../../controllers/useAccessToken.js';
 import { FileMetadata } from '../models/FileMetadata.model.js';
 import { v4 } from 'uuid';
@@ -8,6 +7,7 @@ import md5 from 'md5';
 import fs from 'node:fs/promises';
 import { User } from '../../users/models/User.model.js';
 import FileMetadataSchema from '../models/FileMetadata.schema.js';
+import { CommonError } from '../../../models/Error.js';
 
 const storage = multer.diskStorage({
   destination(req, _, callback) {
@@ -21,9 +21,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage,
-  fileFilter(request, file, callback) {
+  fileFilter(request, _, callback) {
     (async () => {
-      if (!request.db) throw createHttpError(500, 'Database not found');
+      if (!request.db) throw CommonError.INTERNAL_SERVER_ERROR(500, 'Database not found');
 
       // @ts-expect-error context injection
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -32,12 +32,12 @@ const upload = multer({
       const userRepository = request.db.getRepository(User);
 
       const user = await userRepository.findOneBy({ id: token.id });
-      if (!user) throw createHttpError(404, 'User not found');
+      if (!user) throw CommonError.USER_NOT_FOUND();
 
       callback(null, true);
     })().catch((err) => {
       if (err instanceof Error) callback(err);
-      else callback(createHttpError(400, 'Unknown error'));
+      else callback(CommonError.COMMON_INVALID_BODY(400, 'Unknown error'));
     });
   },
 });
@@ -52,9 +52,9 @@ export const uploadFile = [
     const fileMetadataRepository = useRepository(FileMetadata);
 
     const user = await userRepository.findOneBy({ id: token.id });
-    if (!user) throw createHttpError(404, 'User not found');
+    if (!user) throw CommonError.USER_NOT_FOUND();
 
-    if (!request.file) throw createHttpError(400, 'File not found');
+    if (!request.file) throw CommonError.FILE_NOT_FOUND();
     const buffer = await fs.readFile(request.file.path);
     const hash = md5(buffer);
     const alreadyExistFile = await fileMetadataRepository.findOne({

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Response } from 'express';
 import z, { AnyZodObject } from 'zod';
-import HttpError from 'http-errors';
 
 import { O } from 'ts-toolbelt';
 
 import { ContextRequest, createMiddleware } from '../middlewares/Middleware.js';
 import { EntityTarget, ObjectLiteral, Repository } from 'typeorm';
 import { Config } from '../utils/Config.js';
+import { CommonError } from '../models/Error.js';
 
 export interface ControllerHookContext {
   request: ContextRequest;
@@ -32,10 +32,12 @@ export const createControllerContext = (options: ControllerHookContext): Control
 
     if (schema) {
       const parsed = schema.safeParse(body);
-
       if (parsed.success) return parsed.data;
 
-      throw HttpError(400, parsed.error.message);
+      const error = CommonError.COMMON_INVALID_BODY(400, parsed.error.message);
+      error.errors = parsed.error.errors;
+
+      throw error;
     }
 
     return body;

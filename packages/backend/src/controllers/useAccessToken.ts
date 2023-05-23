@@ -1,9 +1,9 @@
 import JWT, { JwtPayload } from 'jsonwebtoken';
 import { z } from 'zod';
-import createHttpError from 'http-errors';
 
 import { ControllerHookContext } from './Controller.js';
 import UserSchema from '../domains/users/models/User.schema.js';
+import { CommonError } from '../models/Error.js';
 
 declare module "express" {
   export interface Request  {
@@ -15,25 +15,25 @@ export const useAccessToken = (context: ControllerHookContext) => {
   const { request } = context;
 
   const auth = request.headers.authorization;
-  if (!auth) throw createHttpError(401, 'No access token provided');
+  if (!auth) throw CommonError.AUTH_NO_ACCESS_TOKEN();
   const [authType, accessToken] = auth.split(' ');
 
-  if (authType !== 'Bearer') throw createHttpError(401, 'Invalid access token type');
+  if (authType !== 'Bearer') throw CommonError.AUTH_INVALID_TOKEN(401, 'Invalid access token type');
 
   const { secret } = request.config.security;
-  if (!secret) throw createHttpError(500, 'No secret provided');
+  if (!secret) throw CommonError.INTERNAL_SERVER_ERROR(500, 'No secret provided');
 
   try {
     const parsedToken = JWT.verify(accessToken, secret);
-    if (typeof parsedToken === 'string') throw Error('Invalid token');
+    if (typeof parsedToken === 'string') throw CommonError.AUTH_INVALID_TOKEN();
 
     request.accessToken = parsedToken;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    if (err.name === "TokenExpiredError") throw createHttpError(419, 'Token expired');
-    if (err.name === "JsonWebTokenError") throw createHttpError(401, 'Invalid access token');
+    if (err.name === "TokenExpiredError") throw CommonError.AUTH_EXPIRED_TOKEN();
+    if (err.name === "JsonWebTokenError") throw CommonError.AUTH_INVALID_TOKEN();
 
-    throw createHttpError(401, 'token error');
+    throw CommonError.INTERNAL_SERVER_ERROR();
   }
 
   return request.accessToken as z.infer<typeof UserSchema.response>;

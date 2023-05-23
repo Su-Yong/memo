@@ -2,6 +2,7 @@ import createHttpError from 'http-errors';
 import { createController } from '../../../controllers/Controller.js';
 import { useAccessToken } from '../../../controllers/useAccessToken.js';
 import { Workspace } from '../models/Workspace.model.js';
+import { CommonError } from '../../../models/Error.js';
 
 export const deleteWorkspace = createController(async ({ context, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
@@ -16,7 +17,7 @@ export const deleteWorkspace = createController(async ({ context, useRepository,
     relations: ['members', 'owner'],
   });
 
-  if (!workspace) throw createHttpError(404, 'Workspace not found');
+  if (!workspace) throw CommonError.WORKSPACE_NOT_FOUND();
   if (!(await workspace.canDelete(token))) throw createHttpError(403, 'Only the owner can delete the workspace');
 
   await workspaceRepository.delete(workspace.id);

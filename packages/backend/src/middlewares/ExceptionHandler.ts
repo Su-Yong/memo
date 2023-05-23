@@ -8,13 +8,13 @@ export const ExceptionHandler = (err: Error, request: Request, response: Respons
     return next(err);
   }
 
-  console.log('error!', err, err instanceof CommonError);
   if (err instanceof HttpError || err instanceof CommonError) {
     response.status(err.status)
     response.json({
       code: err.code,
       status: err.status,
       message: err.message,
+      errors: err.errors,
     });
   } else {
     response.status(500)

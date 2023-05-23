@@ -4,7 +4,7 @@ import { User } from '../models/User.model.js';
 import UserSchema from '../models/User.schema.js';
 
 import { hash } from 'bcrypt';
-import createHttpError from 'http-errors';
+import { CommonError } from '../../../models/Error.js';
 
 export const updateUser = createController(async ({ context, useRequestBody, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
@@ -13,8 +13,8 @@ export const updateUser = createController(async ({ context, useRequestBody, use
   const params = useParams();
 
   const user = await repository.findOneBy({ email: params.email ?? token.email });
-  if (!user) throw createHttpError(404, 'User not found');
-  if (!await user.canUpdate(token)) throw createHttpError(401, 'You are not allowed to update this user');
+  if (!user) throw CommonError.USER_NOT_FOUND();
+  if (!await user.canUpdate(token)) throw CommonError.USER_NOT_ALLOWED_RESOURCE();
 
   if (body.email) user.email = body.email;
   if (body.password) user.password = await hash(body.password, 12);

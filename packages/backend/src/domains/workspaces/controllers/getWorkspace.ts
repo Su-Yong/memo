@@ -1,10 +1,8 @@
+import { CommonError } from '../../../models/Error.js';
 import { createController } from '../../../controllers/Controller.js';
 import { useAccessToken } from '../../../controllers/useAccessToken.js';
-// import { User } from '../../users/models/User.model.js';
-import createHttpError from 'http-errors';
 import { Workspace } from '../models/Workspace.model.js';
 import WorkspaceSchema from '../models/Workspace.schema.js';
-// import { In } from 'typeorm';
 
 export const getWorkspace = createController(async ({ context, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
@@ -35,8 +33,8 @@ export const getWorkspace = createController(async ({ context, useRepository, us
       relations: ['members', 'owner'],
     });
 
-    if (!workspace) throw createHttpError(404, 'Workspace not found');
-    if (!await workspace.canRead(token)) throw createHttpError(403, 'You are not allowed to read this workspace');
+    if (!workspace) throw CommonError.WORKSPACE_NOT_FOUND();
+    if (!await workspace.canRead(token)) throw CommonError.WORKSPACE_NOT_ALLOWED_RESOURCE();
 
     useResponse(
       200,

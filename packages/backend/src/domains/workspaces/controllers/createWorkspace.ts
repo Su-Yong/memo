@@ -2,8 +2,8 @@ import { createController } from '../../../controllers/Controller.js';
 import { useAccessToken } from '../../../controllers/useAccessToken.js';
 import WorkspaceSchema from '../models/Workspace.schema.js';
 import { Workspace } from '../models/Workspace.model.js';
-import createHttpError from 'http-errors';
 import { User } from '../../users/models/User.model.js';
+import { CommonError } from '../../../models/Error.js';
 
 export const createWorkspace = createController(async ({ context, useRepository, useResponse, useRequestBody }) => {
   const token = useAccessToken(context);
@@ -12,7 +12,7 @@ export const createWorkspace = createController(async ({ context, useRepository,
   const userRepository = useRepository(User);
 
   const user = await userRepository.findOneBy({ id: token.id });
-  if (!user) throw createHttpError(404, 'User not found');
+  if (!user) throw CommonError.USER_NOT_FOUND();
 
   const workspace = new Workspace();
   workspace.name = body.name;
