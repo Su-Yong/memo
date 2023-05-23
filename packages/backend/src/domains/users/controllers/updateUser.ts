@@ -12,7 +12,7 @@ export const updateUser = createController(async ({ context, useRequestBody, use
   const repository = useRepository(User);
   const params = useParams();
 
-  const user = await repository.findOneBy({ email: params.email });
+  const user = await repository.findOneBy({ email: params.email ?? token.email });
   if (!user) throw createHttpError(404, 'User not found');
   if (!await user.canUpdate(token)) throw createHttpError(401, 'You are not allowed to update this user');
 

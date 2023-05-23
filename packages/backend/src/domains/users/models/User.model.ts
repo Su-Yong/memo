@@ -32,6 +32,12 @@ export class User implements IUser {
   @ManyToMany(() => Workspace, workspace => workspace.members)
   workspaces!: Promise<Workspace[]>;
 
+  // TODO: Implement this
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async canRead(user: z.infer<typeof UserSchema.response>) {
+    return true;
+  }
+
   async canUpdate(user: z.infer<typeof UserSchema.response>) {
     return user.id === this.id || user.permission === 'admin';
   }
