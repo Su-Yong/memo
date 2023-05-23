@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai';
-import { accessToken } from '../../../store/auth';
+import { ACCESS_TOKEN } from '../../../store/auth';
 import { useRef } from 'react';
 import { loginUser } from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const setAccessToken = useSetAtom(accessToken);
+  const setAccessToken = useSetAtom(ACCESS_TOKEN);
 
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -27,23 +27,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className={'container mx-auto p-6 flex flex-col gap-2 justify-start items-start'}>
+    <div className={'w-full h-full container mx-auto p-8 flex flex-col gap-2 justify-center items-center'}>
       <header className={'font-bold text-2xl flex flex-row gap-1 items-center'}>
         <i className={'material-symbols-outlined icon'}>
           note
         </i>
         메모
       </header>
-      <form className={'flex flex-col justify-start items-stretch gap-2'} onSubmit={onSubmit}>
-        <div className={'flex flex-col gap-1'}>
+      <form className={'w-full sm:w-72 flex flex-col justify-start items-stretch gap-2'} onSubmit={onSubmit}>
+        <div className={'w-full flex flex-col gap-1'}>
           <label htmlFor={'email'}>이메일</label>
           <input ref={emailRef} id={'email'} type={'email'} className={'input'} />
         </div>
-        <div className={'flex flex-col gap-1'}>
+        <div className={'w-full flex flex-col gap-1'}>
           <label htmlFor={'password'}>비밀번호</label>
           <input ref={passwordRef} id={'password'} type={'password'} className={'input'} />
         </div>
-        <button type={'submit'} className={'btn-primary flex self-end'}>
+        <button type={'submit'} className={'btn-primary flex self-end items-center gap-1'}>
+          <i className={'material-symbols-outlined icon text-base'}>
+            login
+          </i>
           로그인
         </button>
       </form>
