@@ -1,13 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { HttpError } from 'http-errors';
+import { CommonError } from '../models/Error.js';
 
 export const ExceptionHandler = (err: Error, request: Request, response: Response, next: NextFunction) => {
   if (response.headersSent) {
     return next(err);
   }
 
-  if (err instanceof HttpError) {
+  console.log('error!', err, err instanceof CommonError);
+  if (err instanceof HttpError || err instanceof CommonError) {
     response.status(err.status)
     response.json({
       code: err.code,
