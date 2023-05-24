@@ -1,8 +1,9 @@
 import UserSchema from '../../users/models/User.schema.js';
 import { User } from '../../users/models/User.model.js';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, JoinColumn, SaveOptions } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, JoinColumn, SaveOptions, OneToMany } from 'typeorm'
 import { z } from 'zod';
 import { AvailableAction, Modifiable } from '../../../models/Common.js';
+import { Memo } from '../../memos/models/Memo.model.js';
 
 export type WorkspaceAction = AvailableAction | 'VISIBLE' | 'EDITABLE';
 
@@ -41,6 +42,10 @@ export class Workspace extends Modifiable {
   @ManyToOne(() => User)
   @JoinColumn()
   owner!: Promise<User> | User;
+
+  @OneToMany(() => Memo, (memo) => memo.workspace)
+  @JoinColumn()
+  memos!: Promise<Memo[]> | Memo[];
 
   async canRead(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
     const isMember = !!(await this.members)?.find((member) => member.id === user.id);

@@ -5,6 +5,8 @@ import { addMemberToWorkspace, removeMemberToWorkspace } from './updateWorkspace
 import { updateWorkspace } from './updateWorkspace.js';
 import { deleteWorkspace } from './deleteWorkspace.js';
 
+import { memoRouter } from '../../memos/controllers/index.js';
+
 export const workspaceRouter = Router({ mergeParams: true });
 
 workspaceRouter.post('/', createWorkspace);
@@ -13,3 +15,5 @@ workspaceRouter.patch('/:id', updateWorkspace);
 workspaceRouter.delete('/:id', deleteWorkspace);
 workspaceRouter.patch('/:id/members', addMemberToWorkspace);
 workspaceRouter.delete('/:id/members', removeMemberToWorkspace);
+
+workspaceRouter.use('/:workspaceId/memos', memoRouter);

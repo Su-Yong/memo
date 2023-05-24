@@ -5,7 +5,7 @@ import { ModifiableSchema } from '../../../models/Common.js';
 
 export const WorkspaceActionsSchema = z.enum(['CREATE', 'READ', 'UPDATE', 'DELETE', 'VISIBLE', 'EDITABLE']).array();
 
-interface ToWorkspaceResponseOptions {
+export interface ToWorkspaceResponseOptions {
   withMembers?: boolean;
   withAvailableActions?: z.infer<typeof UserSchema.response>;
 }

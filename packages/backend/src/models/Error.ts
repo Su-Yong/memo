@@ -60,6 +60,12 @@ export class CommonError extends Error implements HttpError {
   @error(403, 'You are not allowed to access this file')
   static FILE_NOT_ALLOWED_RESOURCE(status?: number, msg?: string): CommonError { return {} as any }
 
+  // workspaces
+  @error(404, 'Memo not found')
+  static MEMO_NOT_FOUND(status?: number, msg?: string): CommonError { return {} as any }
+  @error(403, 'You are not allowed to access this memo')
+  static MEMO_NOT_ALLOWED_RESOURCE(status?: number, msg?: string): CommonError { return {} as any }
+
   constructor(code: string, status: number, message?: string) {
     super(message);
 
