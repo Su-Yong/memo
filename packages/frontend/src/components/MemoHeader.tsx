@@ -6,7 +6,7 @@ export interface MemoHeaderProps {
 }
 const MemoHeader = ({ title }: MemoHeaderProps) => {
   return (
-    <header className={'flex flex-col justify-start items-start p-2 bg-gray-50'}>
+    <header className={'flex flex-col justify-start items-start p-2 bg-gray-100'}>
       <div className={'flex justify-start items-center gap-2'}>
         <button className={'btn-text btn-icon flex'}>
           <i className={'material-symbols-outlined icon'}>

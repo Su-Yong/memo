@@ -8,7 +8,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ACCESS_TOKEN } from './store/auth';
 import { queryClientAtom } from 'jotai-tanstack-query';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60, // 1시간
+    },
+  },
+});
 
 const HydrateAtoms = ({ children }: { children: JSX.Element }) => {
   useHydrateAtoms([[queryClientAtom, queryClient]]);

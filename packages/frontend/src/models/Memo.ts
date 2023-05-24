@@ -8,4 +8,6 @@ export interface Memo extends Modifiable {
   image?: string;
 
   workspace: Workspace;
+
+  children?: Memo[];
 }

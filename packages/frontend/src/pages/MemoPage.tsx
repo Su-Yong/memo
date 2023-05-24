@@ -12,6 +12,8 @@ import { CLIENT_USER } from '../store/auth';
 import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
 import MemoList from '../containers/MemoList';
+import Spinner from '../components/common/Spinner';
+import MemoTab from '../components/MemoTab';
 
 const MemoPage = () => {
   const queryClient = useQueryClient();
@@ -74,7 +76,7 @@ const MemoPage = () => {
           </button>
           <div className={'flex-1'}></div>
           <div className={'bg-gray-300 px-3 h-[1px]'}></div>
-          <button className={'btn-text btn-icon flex'}>
+          <button className={'relative btn-text btn-icon flex'}>
             <label className={'rounded-full w-8 h-8 overflow-hidden flex justify-center items-center bg-gray-200'}>
               {
                 clientUser?.profile
@@ -84,6 +86,7 @@ const MemoPage = () => {
                   </i>
               }
               <input type="file" accept="image/*" className={'hidden'} onChange={onProfileFile} />
+              {profileMutation.isLoading && <Spinner className='absolute w-8 h-8 stroke-primary-500' />}
             </label>
           </button>
         </Allotment.Pane>
@@ -91,7 +94,7 @@ const MemoPage = () => {
           snap
           minSize={210}
           preferredSize={'30%'}
-          className={`w-full h-full`}
+          className={`w-full h-full bg-gray-100`}
         >
           {
             selectedWorkspace
@@ -99,7 +102,8 @@ const MemoPage = () => {
               : null
           }
         </Allotment.Pane>
-        <Allotment.Pane minSize={210}>
+        <Allotment.Pane minSize={210} className={'bg-gray-100'}>
+          <MemoTab memoList={[{ name: 'test1' }, { name: 'test2' }]} />
           <MemoHeader title={'memo1'} />
           <section className={'w-full h-full container mx-auto flex flex-col justify-start items-stretch'}>
             <input
