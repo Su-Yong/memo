@@ -5,7 +5,7 @@ import z, { AnyZodObject } from 'zod';
 import { O } from 'ts-toolbelt';
 
 import { ContextRequest, createMiddleware } from '../middlewares/Middleware.js';
-import { EntityTarget, ObjectLiteral, Repository } from 'typeorm';
+import { EntityTarget, ObjectLiteral, Repository, TreeRepository } from 'typeorm';
 import { Config } from '../utils/Config.js';
 import { CommonError } from '../models/Error.js';
 
@@ -14,13 +14,18 @@ export interface ControllerHookContext {
   response: Response;
   next: NextFunction;
 }
+interface ParsedQs { [key: string]: undefined | string | string[] | ParsedQs | ParsedQs[] }
 export interface ControllerContext {
   useRequest: <T = ContextRequest>(getter?: (request: ContextRequest) => T) => T;
   useRequestBody: <Schema extends AnyZodObject = AnyZodObject>(schema?: Schema) => z.infer<Schema>;
   useParams: () => Record<string, string>;
+  useQuery: () => ParsedQs;
   useConfig: () => Config;
   useDB: () => ContextRequest['db'];
-  useRepository: <Entity extends ObjectLiteral>(entity: EntityTarget<Entity>) => Repository<Entity>;
+  useRepository: <
+    Entity extends ObjectLiteral,
+    Mode extends 'default' | 'tree' = 'default'
+  >(entity: EntityTarget<Entity>, mode?: Mode) => Mode extends 'tree' ? TreeRepository<Entity> : Repository<Entity>;
   useResponse: (statusCode: number, response?: string | O.Object) => void;
 
   context: ControllerHookContext;
@@ -43,13 +48,15 @@ export const createControllerContext = (options: ControllerHookContext): Control
     return body;
   };
   const useParams: ControllerContext['useParams'] = () => useRequest((it) => it.params);
+  const useQuery: ControllerContext['useQuery'] = () => useRequest((it) => it.query);
   const useConfig: ControllerContext['useConfig'] = () => useRequest((it) => it.config);
   const useDB: ControllerContext['useDB'] = () => useRequest((it) => it.db);
-  const useRepository: ControllerContext['useRepository'] = (entity) => {
+  const useRepository = ((entity, mode) => {
     const db = useDB();
 
+    if (mode === 'tree') return db.getTreeRepository(entity);
     return db.getRepository(entity);
-  };
+  }) as ControllerContext['useRepository'];
 
   const useResponse: ControllerContext['useResponse'] = (statusCode, response) => {
     options.response.status(statusCode);
@@ -63,6 +70,7 @@ export const createControllerContext = (options: ControllerHookContext): Control
     useRequest,
     useRequestBody,
     useParams,
+    useQuery,
     useConfig,
     useDB,
     useRepository,

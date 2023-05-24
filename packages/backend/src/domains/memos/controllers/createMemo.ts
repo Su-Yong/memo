@@ -13,7 +13,7 @@ export const createMemo = createController(async ({ context, useRequestBody, use
 
   const userRepository = useRepository(User);
   const workspaceRepository = useRepository(Workspace);
-  const memoRepository = useRepository(Memo);
+  const memoRepository = useRepository(Memo, 'tree');
 
   const workspaceId = Number(params.workspaceId);
 
@@ -24,12 +24,23 @@ export const createMemo = createController(async ({ context, useRequestBody, use
   if (!workspace) throw CommonError.WORKSPACE_NOT_FOUND();
 
   const memo = new Memo();
+
+  if (body.parentId) {
+    const parentMemo = await memoRepository.findOneBy({ id: body.parentId });
+    if (!parentMemo) throw CommonError.MEMO_NOT_FOUND();
+
+    memo.parent = parentMemo;
+    parentMemo.children ??= [];
+    parentMemo.children.push(memo);
+  }
+
   memo.name = body.name;
   memo.content = body.content;
   memo.image = body.image;
   if (body.visibleRange) memo.visibleRange = body.visibleRange;
   if (body.editableRange) memo.editableRange = body.editableRange;
   memo.workspace = workspace;
+  memo.children = [];
   memo.mark(user);
 
   const result = await memoRepository.save(memo);

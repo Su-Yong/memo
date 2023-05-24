@@ -1,12 +1,13 @@
 import UserSchema from '../../users/models/User.schema.js';
-import { Workspace, WorkspaceAction } from '../../workspaces/models/Workspace.model.js';
+import { Workspace } from '../../workspaces/models/Workspace.model.js';
 import { AvailableAction, Modifiable } from '../../../models/Common.js';
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, Tree, TreeChildren, TreeParent } from 'typeorm';
 import { z } from 'zod';
 
 export type MemoAction = AvailableAction | 'VISIBLE' | 'EDITABLE';
 
 @Entity()
+@Tree('closure-table')
 export class Memo extends Modifiable {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -37,6 +38,12 @@ export class Memo extends Modifiable {
   @ManyToOne(() => Workspace, workspace => workspace.memos)
   @JoinColumn()
   workspace!: Promise<Workspace> | Workspace;
+
+  @TreeChildren()
+  children!: Memo[];
+
+  @TreeParent()
+  parent!: Memo;
 
   async canRead(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
     const [

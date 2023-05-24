@@ -10,8 +10,14 @@ export interface ToMemoResponseOptions {
   withWorkspace?: boolean | ToWorkspaceResponseOptions;
   withAvailableActions?: z.infer<typeof UserSchema.response>;
 }
+type MemoTreeResponseType = z.infer<typeof MemoSchema.response> & {
+  children?: MemoTreeResponseType[];
+  parent?: MemoTreeResponseType;
+};
 class MemoSchema extends ModifiableSchema {
   static create = z.object({
+    parentId: z.number().optional(),
+
     name: z.string().min(1),
     content: z.string(),
     image: z.string().optional(),
@@ -36,6 +42,11 @@ class MemoSchema extends ModifiableSchema {
     availableActions: MemoActionsSchema.optional(),
   });
 
+  static treeResponse: z.ZodType<MemoTreeResponseType> = MemoSchema.response.extend({
+    children: z.lazy(() => MemoSchema.treeResponse.array()).optional(),
+    parent: z.lazy(() => MemoSchema.treeResponse).optional(),
+  });
+
   static override async toResponse(
     memo: Memo,
     {
@@ -58,6 +69,21 @@ class MemoSchema extends ModifiableSchema {
       result.workspace = await WorkspaceSchema.toResponse(await memo.workspace, options);
     }
     // if (withAvailableActions) result.availableActions = await memo.getAvailableActions(withAvailableActions);
+
+    return result;
+  }
+
+  static async toTreeResponse(
+    memo: Memo,
+    {
+      withWorkspace = false,
+      withAvailableActions = undefined,
+    }: ToMemoResponseOptions = {},
+  ): Promise<z.infer<typeof this.treeResponse>> {
+    const result: z.infer<typeof this.treeResponse> = await this.toResponse(memo, { withWorkspace, withAvailableActions });
+
+    if (memo.parent) result.parent = await MemoSchema.toTreeResponse(memo.parent);
+    if (memo.children) result.children = await Promise.all(memo.children.map((child) => MemoSchema.toTreeResponse(child)));
 
     return result;
   }
