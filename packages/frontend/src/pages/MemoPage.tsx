@@ -1,6 +1,5 @@
 import { Allotment } from 'allotment';
 
-import MemoTreeItem from '../components/MemoTreeItem';
 import MemoHeader from '../components/MemoHeader';
 import Editor from '../containers/Editor';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -12,6 +11,7 @@ import { useAtomValue } from 'jotai';
 import { CLIENT_USER } from '../store/auth';
 import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
+import MemoList from '../containers/MemoList';
 
 const MemoPage = () => {
   const queryClient = useQueryClient();
@@ -51,21 +51,12 @@ const MemoPage = () => {
           minSize={64}
           maxSize={64}
           className={`
+            w-full
+            h-full
             flex flex-col justify-start items-center gap-3
             p-3
           `}
         >
-          <label className={'rounded-full w-8 h-8 overflow-hidden flex justify-center items-center bg-gray-200'}>
-            {
-              clientUser?.profile
-                ? <img src={clientUser?.profile} className={'w-full h-full object-cover'} />
-                : <i className={'material-symbols-outlined icon text-sm'}>
-                  person
-                </i>
-            }
-            <input type="file" accept="image/*" className={'hidden'} onChange={onProfileFile} />
-          </label>
-          <div className={'bg-gray-300 px-3 h-[1px]'}></div>
           {workspaces?.map((workspace) => (
             <button
               className={`${workspace.id === selectedWorkspace?.id ? 'btn-primary' : 'btn-text'} btn-icon flex`}
@@ -81,30 +72,32 @@ const MemoPage = () => {
               add
             </i>
           </button>
+          <div className={'flex-1'}></div>
+          <div className={'bg-gray-300 px-3 h-[1px]'}></div>
+          <button className={'btn-text btn-icon flex'}>
+            <label className={'rounded-full w-8 h-8 overflow-hidden flex justify-center items-center bg-gray-200'}>
+              {
+                clientUser?.profile
+                  ? <img src={clientUser?.profile} className={'w-full h-full object-cover'} />
+                  : <i className={'material-symbols-outlined icon text-sm'}>
+                    person
+                  </i>
+              }
+              <input type="file" accept="image/*" className={'hidden'} onChange={onProfileFile} />
+            </label>
+          </button>
         </Allotment.Pane>
         <Allotment.Pane
           snap
           minSize={210}
           preferredSize={'30%'}
-          className={`
-            flex flex-col justify-start items-stretch gap-0 p-2
-            bg-gray-50
-          `}
+          className={`w-full h-full`}
         >
-          <div className={'flex justify-between items-center'}>
-            <span className={'font-bold text-lg'}>
-              {selectedWorkspace?.name}
-            </span>
-            <button className={'btn-text btn-icon flex'}>
-              <i className={'material-symbols-outlined icon'}>
-                more_horiz
-              </i>
-            </button>
-          </div>
-          <span className={'text-md'}>
-            {selectedWorkspace?.description}
-          </span>
-          <MemoTreeItem />
+          {
+            selectedWorkspace
+              ? <MemoList workspace={selectedWorkspace} />
+              : null
+          }
         </Allotment.Pane>
         <Allotment.Pane minSize={210}>
           <MemoHeader title={'memo1'} />
