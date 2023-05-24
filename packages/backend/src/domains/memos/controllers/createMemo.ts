@@ -6,21 +6,18 @@ import MemoSchema from '../models/Memo.schema.js';
 import { CommonError } from '../../../models/Error.js';
 import { User } from '../../users/models/User.model.js';
 
-export const createMemo = createController(async ({ context, useRequestBody, useParams, useRepository, useResponse }) => {
+export const createMemo = createController(async ({ context, useRequestBody, useRepository, useResponse }) => {
   const token = useAccessToken(context);
   const body = useRequestBody(MemoSchema.create);
-  const params = useParams();
 
   const userRepository = useRepository(User);
   const workspaceRepository = useRepository(Workspace);
   const memoRepository = useRepository(Memo, 'tree');
 
-  const workspaceId = Number(params.workspaceId);
-
   const user = await userRepository.findOneBy({ id: token.id });
   if (!user) throw CommonError.USER_NOT_FOUND();
 
-  const workspace = await workspaceRepository.findOneBy({ id: workspaceId });
+  const workspace = await workspaceRepository.findOneBy({ id: body.workspaceId });
   if (!workspace) throw CommonError.WORKSPACE_NOT_FOUND();
 
   const memo = new Memo();

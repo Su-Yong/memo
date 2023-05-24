@@ -4,6 +4,6 @@ import { getMemo, getMemos } from './getMemo.js';
 
 export const memoRouter = Router({ mergeParams: true });
 
-memoRouter.post('/', createMemo);
-memoRouter.get('/', getMemos);
-memoRouter.get('/:id', getMemo);
+memoRouter.post('/memos', createMemo);
+memoRouter.get('/workspaces/:workspaceId/memos', getMemos);
+memoRouter.get('/memos/:id', getMemo);

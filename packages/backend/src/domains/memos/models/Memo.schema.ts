@@ -16,6 +16,7 @@ type MemoTreeResponseType = z.infer<typeof MemoSchema.response> & {
 };
 class MemoSchema extends ModifiableSchema {
   static create = z.object({
+    workspaceId: z.number(),
     parentId: z.number().optional(),
 
     name: z.string().min(1),
