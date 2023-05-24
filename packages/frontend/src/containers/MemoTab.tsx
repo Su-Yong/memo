@@ -9,8 +9,8 @@ const MemoTab = () => {
   return (
     <div
       className={`
-        w-full h-8 flex flex-row justify-start items-center gap-2 px-3
-        bg-gray-100
+        w-full h-10 flex flex-row justify-start items-center gap-2 px-3
+        bg-gray-100 overflow-x-auto
       `}
     >
       {memoIdList.map((memoId) => (

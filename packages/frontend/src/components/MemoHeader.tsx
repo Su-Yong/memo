@@ -16,7 +16,7 @@ const MemoHeader = () => {
   return (
     <header
       className={`
-        w-full flex flex-col justify-start items-start gap-2 py-3
+        w-full flex flex-col justify-start items-start gap-2 py-2
         bg-gray-100 border-b-[1px] border-gray-300
       `}
     >

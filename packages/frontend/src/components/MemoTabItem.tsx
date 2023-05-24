@@ -33,18 +33,20 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
     <div
       className={cx(
         `
-          flex flex-row justify-between items-center gap-2
+          w-fit min-w-fit flex flex-row justify-between items-center gap-2
           pl-3 pr-1 py-1 bg-gray-50 rounded-md shadow-sm
-          select-none cursor-pointer
+          select-none cursor-pointer truncate
         `,
         selected && 'bg-primary-100 font-bold',
       )}
       onClick={onClick}
     >
-      {memo && memo.name}
-      {!memo && <Spinner className={'w-4 h-4 stroke-gray-300'} />}
-      {!memo && '로딩중...'}
-      <button className={'btn-text btn-icon p-1 flex'} onClick={onClose}>
+      <span className={'shrink-1'}>
+        {memo && memo.name}
+        {!memo && <Spinner className={'w-4 h-4 stroke-gray-300'} />}
+        {!memo && '로딩중...'}
+      </span>
+      <button className={'btn-text btn-icon p-1 flex shrink-0'} onClick={onClose}>
         <i className={'material-symbols-outlined icon text-sm'}>
           close
         </i>
