@@ -1,3 +1,5 @@
+import MemoTab from '../containers/MemoTab';
+
 export interface MemoHeaderProps {
   title: string;
 
@@ -6,21 +8,21 @@ export interface MemoHeaderProps {
 }
 const MemoHeader = ({ title }: MemoHeaderProps) => {
   return (
-    <header className={'flex flex-col justify-start items-start p-2 bg-gray-100'}>
-      <div className={'flex justify-start items-center gap-2'}>
-        <button className={'btn-text btn-icon flex'}>
+    <header
+      className={`
+        w-full flex flex-col justify-start items-start gap-2 py-3
+        bg-gray-100 border-b-[1px] border-gray-300
+      `}
+    >
+      <MemoTab />
+      <div className={'w-full flex justify-start items-center gap-2 px-4'}>
+        <input className={'w-full font-bold text-2xl outline-none bg-transparent'} value={title} />
+        <div className={'flex-1'}></div>
+        <button className={'btn-text btn-icon flex text-md'}>
           <i className={'material-symbols-outlined icon'}>
-            arrow_back
+            close
           </i>
         </button>
-        <button className={'btn-text btn-icon flex'}>
-          <i className={'material-symbols-outlined icon'}>
-            arrow_upward
-          </i>
-        </button>
-        <span className={'font-bold text-2xl'}>
-          {title}
-        </span>
       </div>
     </header>
   )

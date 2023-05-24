@@ -20,12 +20,21 @@
       active:scale-90 active:bg-primary-300
       focus:outline-none focus:bg-primary-200;
   }
+
   .btn-error {
     @apply px-3 py-2 bg-error-100 text-error-500 font-semibold rounded-lg
       outline-none select-none cursor-pointer transition-all ease-out
       hover:bg-error-200
       active:scale-90 active:bg-error-300
       focus:outline-none focus:bg-error-200;
+  }
+
+  .btn-secondary {
+    @apply px-3 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg
+      outline-none select-none cursor-pointer transition-all ease-out
+      hover:bg-gray-300
+      active:scale-90 active:bg-gray-400
+      focus:outline-none focus:bg-gray-300;
   }
 
   .btn-text {
@@ -50,7 +59,7 @@
   }
 
   .icon {
-    @apply inline-block select-none;
+    @apply inline-flex select-none justify-center items-center;
 
     font-variation-settings: 'FILL' var(--icon-fill, 0),
       'wght' var(--icon-weight, 400),

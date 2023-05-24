@@ -1,16 +1,26 @@
-import { TREE_OPEN_MEMO_ID_LIST } from '../store/memo';
+import { TAB_MEMO_ID_LIST, TREE_OPEN_MEMO_ID_LIST } from '../store/memo';
 import MemoTreeItem from '../components/MemoTreeItem';
 import { Memo } from '../models/Memo';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
+import { Transition } from '@headlessui/react';
 
 export interface MemoTreeProps {
   memo: Memo;
   depth?: number;
+  selectedId?: number;
+
+  onSelect?: (memo: Memo) => void;
 }
 
-const MemoTree = ({ memo, depth = 0 }: MemoTreeProps) => {
+const MemoTree = ({
+  memo,
+  selectedId,
+  depth = 0,
+  onSelect,
+}: MemoTreeProps) => {
   const [openMemoIdList, setOpenMemoIdList] = useAtom(TREE_OPEN_MEMO_ID_LIST);
+  const setTabMemoIdList = useSetAtom(TAB_MEMO_ID_LIST);
 
   const onToggleCollapse = useCallback(() => {
     setOpenMemoIdList((prev) => {
@@ -20,16 +30,45 @@ const MemoTree = ({ memo, depth = 0 }: MemoTreeProps) => {
     });
   }, [memo.id, setOpenMemoIdList]);
 
-  const onClick = () => {
-    alert(`memo click: ${memo.id}`);
-  };
+  const onClick = useCallback((target: Memo) => {
+    onSelect?.(target);
+
+    setTabMemoIdList((prev) => {
+      if (prev.includes(target.id)) return prev;
+
+      return [...prev, target.id];
+    });
+  }, [onSelect, setTabMemoIdList]);
 
   return (
     <>
-      <MemoTreeItem memo={memo} depth={depth} onClick={onClick} onCollapse={onToggleCollapse} />
-      {openMemoIdList.includes(memo.id) && memo.children?.map((item) => (
-        <MemoTree memo={item} depth={depth + 1} />
-      ))}
+      <MemoTreeItem
+        memo={memo}
+        depth={depth}
+        selectedId={selectedId}
+        open={openMemoIdList.includes(memo.id)}
+        onClick={onClick}
+        onCollapse={onToggleCollapse}
+      />
+      <Transition
+        show={openMemoIdList.includes(memo.id)}
+        enter="transition-all duration-75"
+        enterFrom="opacity-0 -translate-y-2"
+        enterTo="opacity-100"
+        leave="transition-all duration-150"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0 -translate-y-2"
+      >
+        {memo.children?.map((item) => (
+          <MemoTree
+            key={item.id}
+            memo={item}
+            depth={depth + 1}
+            selectedId={selectedId}
+            onSelect={onSelect}
+          />
+        ))}
+      </Transition>
     </>
   );
 };

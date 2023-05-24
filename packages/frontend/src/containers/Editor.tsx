@@ -16,7 +16,7 @@ const Editor = () => {
   });
 
   return (
-    <EditorContent editor={editor} className={'w-full h-full px-4 py-2'} />
+    <EditorContent editor={editor} className={'w-full h-full px-4 py-2 overflow-auto'} />
   );
 };
 

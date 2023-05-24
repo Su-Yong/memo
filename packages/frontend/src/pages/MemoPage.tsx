@@ -13,7 +13,7 @@ import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
 import MemoList from '../containers/MemoList';
 import Spinner from '../components/common/Spinner';
-import MemoTab from '../components/MemoTab';
+import MemoTab from '../containers/MemoTab';
 
 const MemoPage = () => {
   const queryClient = useQueryClient();
@@ -47,7 +47,7 @@ const MemoPage = () => {
   }, [profileMutation]);
 
   return (
-    <div className={'w-full h-full bg-gray-50'}>
+    <div className={'w-full h-full bg-gray-100'}>
       <Allotment separator={true}>
         <Allotment.Pane
           minSize={64}
@@ -93,7 +93,7 @@ const MemoPage = () => {
         <Allotment.Pane
           snap
           minSize={210}
-          preferredSize={'30%'}
+          preferredSize={280}
           className={`w-full h-full bg-gray-100`}
         >
           {
@@ -103,18 +103,8 @@ const MemoPage = () => {
           }
         </Allotment.Pane>
         <Allotment.Pane minSize={210} className={'bg-gray-100'}>
-          <MemoTab memoList={[{ name: 'test1' }, { name: 'test2' }]} />
-          <MemoHeader title={'memo1'} />
-          <section className={'w-full h-full container mx-auto flex flex-col justify-start items-stretch'}>
-            <input
-              placeholder={'제목'}
-              className={`
-                outline-none border-0
-                font-extrabold text-[3rem]
-                bg-transparent
-                px-4
-              `}
-            />
+          <section className={'w-full h-full flex flex-col justify-start items-stretch'}>
+            <MemoHeader title={'memo1'} />
             <Editor />
           </section>
         </Allotment.Pane>
