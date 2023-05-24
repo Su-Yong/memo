@@ -9,11 +9,17 @@ const MemoTab = () => {
   return (
     <div
       className={`
-        flex flex-row justify-start items-center gap-2 px-3
+        w-full h-8 flex flex-row justify-start items-center gap-2 px-3
         bg-gray-100
       `}
     >
-      {memoIdList.map((memoId) => <MemoTabItem memoId={memoId} selected={memoId === selectedMemoId} />)}
+      {memoIdList.map((memoId) => (
+        <MemoTabItem
+          key={memoId}
+          memoId={memoId}
+          selected={memoId === selectedMemoId}
+        />
+      ))}
     </div>
   )
 };

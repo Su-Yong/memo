@@ -13,13 +13,12 @@ import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
 import MemoList from '../containers/MemoList';
 import Spinner from '../components/common/Spinner';
-import MemoTab from '../containers/MemoTab';
+import { SELECTED_MEMO_ID } from '../store/memo';
 
 const MemoPage = () => {
   const queryClient = useQueryClient();
   const clientUser = useAtomValue(CLIENT_USER);
   const { data: workspaces } = useQuery(['my-workspaces'], async () => fetchWorkspace());
-
   const profileMutation = useMutation(async (file: File) => {
     if (!file.type.startsWith('image/')) return;
     if (!clientUser) return;
@@ -31,6 +30,7 @@ const MemoPage = () => {
   });
 
   const [selectedWorkspace, setWorkspace] = useState<Workspace | null>(null);
+  const selectedId = useAtomValue(SELECTED_MEMO_ID);
 
   const onToggleWorkspace = useCallback((workspace: Workspace) => {
     if (selectedWorkspace?.id === workspace.id) setWorkspace(null);
@@ -61,6 +61,7 @@ const MemoPage = () => {
         >
           {workspaces?.map((workspace) => (
             <button
+              key={workspace.id}
               className={`${workspace.id === selectedWorkspace?.id ? 'btn-primary' : 'btn-text'} btn-icon flex`}
               onClick={() => onToggleWorkspace(workspace)}
             >
@@ -96,16 +97,40 @@ const MemoPage = () => {
           preferredSize={280}
           className={`w-full h-full bg-gray-100`}
         >
-          {
-            selectedWorkspace
-              ? <MemoList workspace={selectedWorkspace} />
-              : null
-          }
+          {selectedWorkspace && <MemoList workspace={selectedWorkspace} />}
+          {!selectedWorkspace && (
+            <div className={'w-full h-full flex justify-center items-center'}>
+              <div className={'text-gray-400 flex flex-col justify-center items-center'}>
+                <i className={'material-symbols-outlined icon text-6xl'}>
+                  folder
+                </i>
+                <div className={'text-2xl font-bold text-center break-keep'}>
+                  워크스페이스를 선택해주세요
+                </div>
+              </div>
+            </div>
+          )}
         </Allotment.Pane>
         <Allotment.Pane minSize={210} className={'bg-gray-100'}>
           <section className={'w-full h-full flex flex-col justify-start items-stretch'}>
-            <MemoHeader title={'memo1'} />
-            <Editor />
+            {typeof selectedId === 'number' && (
+              <>
+                <MemoHeader />
+                <Editor />
+              </>
+            )}
+            {typeof selectedId !== 'number' && (
+              <div className={'w-full h-full flex justify-center items-center'}>
+                <div className={'text-gray-400 flex flex-col justify-center items-center'}>
+                  <i className={'material-symbols-outlined icon text-6xl'}>
+                    edit
+                  </i>
+                  <div className={'text-2xl font-bold text-center break-keep'}>
+                    메모를 선택해주세요
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
         </Allotment.Pane>
       </Allotment>

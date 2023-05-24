@@ -1,12 +1,18 @@
+import { useQuery } from '@tanstack/react-query';
+import { useAtomValue } from 'jotai';
+import { fetchMemo } from '../api/memo';
 import MemoTab from '../containers/MemoTab';
+import { SELECTED_MEMO_ID } from '../store/memo';
 
-export interface MemoHeaderProps {
-  title: string;
+const MemoHeader = () => {
+  const selectedMemoId = useAtomValue(SELECTED_MEMO_ID);
 
-  parent?: string;
-  back?: string;
-}
-const MemoHeader = ({ title }: MemoHeaderProps) => {
+  const { data: memo } = useQuery(
+    ['memo', selectedMemoId],
+    async () => typeof selectedMemoId === 'number' ? fetchMemo(selectedMemoId) : null,
+  );
+
+
   return (
     <header
       className={`
@@ -16,7 +22,11 @@ const MemoHeader = ({ title }: MemoHeaderProps) => {
     >
       <MemoTab />
       <div className={'w-full flex justify-start items-center gap-2 px-4'}>
-        <input className={'w-full font-bold text-2xl outline-none bg-transparent'} value={title} />
+        <input
+          className={'w-full font-bold text-2xl outline-none bg-transparent'}
+          value={memo?.name}
+          onChange={() => {}}
+        />
         <div className={'flex-1'}></div>
         <button className={'btn-text btn-icon flex text-md'}>
           <i className={'material-symbols-outlined icon'}>

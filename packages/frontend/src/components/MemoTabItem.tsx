@@ -2,16 +2,32 @@ import { cx } from '../utils/className';
 import { fetchMemo } from '../api/memo';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from './common/Spinner';
+import React, { useCallback } from 'react';
+import { useSetAtom } from 'jotai';
+import { SELECTED_MEMO_ID, TAB_MEMO_ID_LIST } from '../store/memo';
 
 export interface MemoTabItemProps {
   memoId: number;
   selected?: boolean;
 }
 const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
+  const setSelectedMemoId = useSetAtom(SELECTED_MEMO_ID);
+  const setTabMemoIdList = useSetAtom(TAB_MEMO_ID_LIST);
+
   const { data: memo } = useQuery(
     ['memo', memoId],
     async () => fetchMemo(memoId),
   );
+
+  const onClick = useCallback(() => {
+    if (memo) setSelectedMemoId(memo.id);
+  }, [memo]);
+
+  const onClose = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+
+    setTabMemoIdList((prev) => prev.filter((id) => id !== memoId));
+  }, []);
 
   return (
     <div
@@ -23,10 +39,12 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
         `,
         selected && 'bg-primary-100 font-bold',
       )}
+      onClick={onClick}
     >
       {memo && memo.name}
-      {!memo && <Spinner className={'w-8 h-8 stroke-gray-300'} />}
-      <button className={'btn-text btn-icon p-1 flex'}>
+      {!memo && <Spinner className={'w-4 h-4 stroke-gray-300'} />}
+      {!memo && '로딩중...'}
+      <button className={'btn-text btn-icon p-1 flex'} onClick={onClose}>
         <i className={'material-symbols-outlined icon text-sm'}>
           close
         </i>

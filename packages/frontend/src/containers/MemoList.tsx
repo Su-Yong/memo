@@ -4,7 +4,7 @@ import { fetchMemoByWorkspace } from '../api/memo';
 import MemoTree from './MemoTree';
 import { useCallback } from 'react';
 import { Memo } from '../models/Memo';
-import { useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { SELECTED_MEMO_ID } from '../store/memo';
 
 export interface MemoListProps {
@@ -16,7 +16,7 @@ const MemoList = ({ workspace }: MemoListProps) => {
     async () => fetchMemoByWorkspace(workspace.id, { as: 'tree' }),
   );
 
-  const setSelectedId = useSetAtom(SELECTED_MEMO_ID);
+  const [selectedId, setSelectedId] = useAtom(SELECTED_MEMO_ID);
 
   const onSelect = useCallback((memo: Memo) => {
     setSelectedId(memo.id);
@@ -39,7 +39,14 @@ const MemoList = ({ workspace }: MemoListProps) => {
       </div>
       <div className={'w-full h-[1px] bg-gray-300 '} />
       <div className={'w-full p-3 flex flex-col justify-start items-stretch'}>
-        {memoList?.map((memo) => <MemoTree memo={memo} onSelect={onSelect} />)}
+        {memoList?.map((memo) => (
+          <MemoTree
+            key={memo.id}
+            memo={memo}
+            selectedId={selectedId ?? undefined}
+            onSelect={onSelect}
+          />
+        ))}
         <button className={'btn-secondary flex justify-center items-center gap-1'}>
           <i className={'material-symbols-outlined icon'}>
             add
