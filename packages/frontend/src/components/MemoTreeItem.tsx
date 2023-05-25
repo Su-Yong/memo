@@ -35,11 +35,12 @@ const MemoTreeItem = ({
     <li
       className={cx(
         `
+          w-full
           flex flex-row justfiy-start items-center p-2
           cursor-pointer rounded-lg transition-colors ease-out
-          hover:bg-primary-100 active:bg-primary-200 focus:bg-primary-200
+          hover:bg-gray-200 active:bg-gray-300 focus:bg-gray-300
         `,
-        selectedId === memo.id && 'bg-primary-100 text-primary-500',
+        selectedId === memo.id && 'bg-primary-100 text-primary-500 hover:bg-primary-200 active:bg-primary-300 focus:bg-primary-300',
       )}
       onClick={onBaseClick}
     >
@@ -55,9 +56,14 @@ const MemoTreeItem = ({
           chevron_right
         </i>
       )}
-      <div className={'text-base truncate'}>
+      <div className={'text-base truncate flex-1'}>
         {memo.name}
       </div>
+      <button className={'btn-text flex p-0 px-1 rounded-md'}>
+        <i className={'material-symbols-outlined icon text-base'}>
+          more_vert
+        </i>
+      </button>
     </li>
   );
 };

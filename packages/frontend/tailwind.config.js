@@ -35,7 +35,7 @@ export default {
       typography: {
         sm: {
           css: {
-            p: {
+            '*': {
               marginTop: `${1 / 3}em`,
               marginBottom: `${1 / 3}em`,
             },
@@ -43,7 +43,7 @@ export default {
         },
         base: {
           css: {
-            p: {
+            '*': {
               marginTop: `${1 / 3}em`,
               marginBottom: `${1 / 3}em`,
             },
@@ -51,7 +51,7 @@ export default {
         },
         lg: {
           css: {
-            p: {
+            '*': {
               marginTop: `${1 / 3}em`,
               marginBottom: `${1 / 3}em`,
             },

@@ -99,7 +99,7 @@ const MemoPage = () => {
         >
           {selectedWorkspace && <MemoList workspace={selectedWorkspace} />}
           {!selectedWorkspace && (
-            <div className={'w-full h-full flex justify-center items-center'}>
+            <div className={'w-full h-full flex justify-center items-center p-4'}>
               <div className={'text-gray-400 flex flex-col justify-center items-center'}>
                 <i className={'material-symbols-outlined icon text-6xl'}>
                   folder

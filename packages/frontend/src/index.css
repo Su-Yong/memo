@@ -40,9 +40,9 @@
   .btn-text {
     @apply px-3 py-2 bg-transparent text-gray-900 font-semibold rounded-lg
       outline-none select-none cursor-pointer transition-all ease-out
-      hover:bg-gray-200
-      active:scale-90 active:bg-gray-300
-      focus:outline-none focus:bg-gray-200;
+      hover:bg-gray-900/10
+      active:scale-90 active:bg-gray-900/20
+      focus:outline-none focus:bg-gray-900/10;
   }
 
   .btn-disabled {
@@ -55,7 +55,7 @@
       py-3 px-2 invalid:ring-error-500
       transition-all ease-out
       hover:bg-gray-200
-      focus:ring-2
+      focus:ring-2;
   }
 
   .icon {

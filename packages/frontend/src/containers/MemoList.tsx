@@ -29,7 +29,7 @@ const MemoList = ({ workspace }: MemoListProps) => {
           {workspace.name}
           <button className={'btn-text btn-icon flex'}>
             <i className={'material-symbols-outlined icon'}>
-              more_horiz
+              settings
             </i>
           </button>
         </h3>

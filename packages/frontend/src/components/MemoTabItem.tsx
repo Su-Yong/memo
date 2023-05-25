@@ -41,7 +41,7 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
       )}
       onClick={onClick}
     >
-      <span className={'shrink-1'}>
+      <span className={'shrink-1 flex justify-start items-center gap-2'}>
         {memo && memo.name}
         {!memo && <Spinner className={'w-4 h-4 stroke-gray-300'} />}
         {!memo && '로딩중...'}
