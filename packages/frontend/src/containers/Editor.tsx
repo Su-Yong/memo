@@ -1,10 +1,38 @@
+import { HocuspocusProvider } from '@hocuspocus/provider';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import { useMemo } from 'react';
+import { useAtomValue } from 'jotai';
+import { CLIENT_USER } from '../store/auth';
 
-const Editor = () => {
+export interface EditorProps {
+  id: string;
+}
+const Editor = ({ id }: EditorProps) => {
+  const provider = useMemo(() => new HocuspocusProvider({
+    url: `wss://local.suyong.me/ws/memos/${id}`,
+    name: id,
+  }), [id]);
+
+  const clientUser = useAtomValue(CLIENT_USER);
+
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        history: false,
+      }),
+      Collaboration.configure({
+        document: provider.document,
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: {
+          name: clientUser?.name,
+          color: '#f783ac',
+        },
+      }),
     ],
     editorProps: {
       attributes: {

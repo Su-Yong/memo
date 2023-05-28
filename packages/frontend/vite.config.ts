@@ -7,7 +7,14 @@ export default defineConfig({
   server: {
     port: 3001,
     proxy: {
-      '/api': 'http://localhost:4672'
+      '/api': {
+        target: 'http://localhost:4672',
+      },
+      '/ws': {
+        target: 'ws://localhost:4672',
+        ws: true,
+        rewrite: (path) => path.replace(/^\/ws/, '/api'),
+      },
     },
   },
 });

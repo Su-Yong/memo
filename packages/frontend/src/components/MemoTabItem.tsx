@@ -7,7 +7,7 @@ import { useSetAtom } from 'jotai';
 import { SELECTED_MEMO_ID, TAB_MEMO_ID_LIST } from '../store/memo';
 
 export interface MemoTabItemProps {
-  memoId: number;
+  memoId: string;
   selected?: boolean;
 }
 const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {

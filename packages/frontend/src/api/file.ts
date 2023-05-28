@@ -1,5 +1,5 @@
-import { FileMetadata } from '../models/FileMetadata.js';
-import axios from './config.js';
+import { FileMetadata } from '../models/FileMetadata';
+import axios from './config';
 
 export const uploadFile = async (file: File): Promise<FileMetadata> => {
   const formData = new FormData();

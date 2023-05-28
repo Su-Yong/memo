@@ -113,13 +113,13 @@ const MemoPage = () => {
         </Allotment.Pane>
         <Allotment.Pane minSize={210} className={'bg-gray-100'}>
           <section className={'w-full h-full flex flex-col justify-start items-stretch'}>
-            {typeof selectedId === 'number' && (
+            {typeof selectedId === 'string' && (
               <>
                 <MemoHeader />
-                <Editor />
+                <Editor id={selectedId} />
               </>
             )}
-            {typeof selectedId !== 'number' && (
+            {typeof selectedId !== 'string' && (
               <div className={'w-full h-full flex justify-center items-center'}>
                 <div className={'text-gray-400 flex flex-col justify-center items-center'}>
                   <i className={'material-symbols-outlined icon text-6xl'}>

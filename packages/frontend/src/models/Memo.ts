@@ -2,7 +2,7 @@ import { Modifiable } from './Common';
 import { Workspace } from './Workspace';
 
 export interface Memo extends Modifiable {
-  id: number;
+  id: string;
   name: string;
   content: string;
   image?: string;

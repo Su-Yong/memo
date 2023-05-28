@@ -8,7 +8,7 @@ import { Transition } from '@headlessui/react';
 export interface MemoTreeProps {
   memo: Memo;
   depth?: number;
-  selectedId?: number;
+  selectedId?: string;
 
   onSelect?: (memo: Memo) => void;
 }

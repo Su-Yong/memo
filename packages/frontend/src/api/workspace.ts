@@ -1,5 +1,5 @@
-import { Workspace } from '../models/Workspace.js';
-import axios from './config.js';
+import { Workspace } from '../models/Workspace';
+import axios from './config';
 
 export interface FetchWorkspace {
   (id?: 'my'): Promise<Workspace[]>;

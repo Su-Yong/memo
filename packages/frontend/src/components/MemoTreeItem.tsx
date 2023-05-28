@@ -4,7 +4,7 @@ import { cx } from '../utils/className';
 
 export interface MemoTreeItemProps {
   memo: Memo;
-  selectedId?: number;
+  selectedId?: string;
   depth?: number;
   open?: boolean;
   onCollapse?: (memo: Memo) => void;

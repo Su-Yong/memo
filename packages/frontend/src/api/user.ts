@@ -1,5 +1,5 @@
 import { User } from '../models/User';
-import axios from './config.js';
+import axios from './config';
 
 export const loginUser = async (email: string, password: string): Promise<{
   accessToken: string;
