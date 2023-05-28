@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import type { IUser } from '../domains/users/models/User.model.js';
+import type { IUser } from '../domains/users/models/User.model';
 import { Entity, CreateDateColumn, UpdateDateColumn, BaseEntity, JoinColumn, ManyToOne } from 'typeorm';
-import UserSchema from '../domains/users/models/User.schema.js';
+import UserSchema from '../domains/users/models/User.schema';
 
 @Entity()
 export class Creatable extends BaseEntity {

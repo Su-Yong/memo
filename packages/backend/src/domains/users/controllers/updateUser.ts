@@ -1,10 +1,10 @@
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { createController } from '../../../controllers/Controller.js';
-import { User } from '../models/User.model.js';
-import UserSchema from '../models/User.schema.js';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { createController } from '../../../controllers/Controller';
+import { User } from '../models/User.model';
+import UserSchema from '../models/User.schema';
 
 import { hash } from 'bcrypt';
-import { CommonError } from '../../../models/Error.js';
+import { CommonError } from '../../../models/Error';
 
 export const updateUser = createController(async ({ context, useRequestBody, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);

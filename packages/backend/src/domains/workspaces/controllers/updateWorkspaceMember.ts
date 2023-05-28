@@ -1,9 +1,9 @@
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { createController } from '../../../controllers/Controller.js';
-import { User } from '../../users/models/User.model.js';
-import { Workspace } from '../models/Workspace.model.js';
-import WorkspaceSchema from '../models/Workspace.schema.js';
-import { CommonError } from '../../../models/Error.js';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { createController } from '../../../controllers/Controller';
+import { User } from '../../users/models/User.model';
+import { Workspace } from '../models/Workspace.model';
+import WorkspaceSchema from '../models/Workspace.schema';
+import { CommonError } from '../../../models/Error';
 
 export const addMemberToWorkspace = createController(async ({ context, useRepository, useResponse, useRequestBody, useParams }) => {
   const token = useAccessToken(context);
@@ -29,7 +29,7 @@ export const addMemberToWorkspace = createController(async ({ context, useReposi
   if (!member) throw CommonError.USER_NOT_FOUND(404, 'Member not found');
 
   const originalMembers = await workspace.members ?? [];
-  if (originalMembers.some((it) => it.id === user.id)) throw CommonError.USER_ALREADY_EXIST(407, 'this member already exists');
+  if (originalMembers.some((it) => it.id === member.id)) throw CommonError.USER_ALREADY_EXIST(407, 'this member already exists');
 
   workspace.members = [...originalMembers, member];
   workspace.mark(user);

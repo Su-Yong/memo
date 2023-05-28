@@ -1,24 +1,31 @@
-import express, { Express } from 'express';
+import express from 'express';
+import expressWs, { Application as Express } from 'express-ws';
+
 import dotenv from 'dotenv';
 import fs from 'node:fs/promises';
 
 import { Object } from 'ts-toolbelt';
+import { Hocuspocus, Server as EditorServer } from '@hocuspocus/server';
+import { Logger as EditorLogger } from '@hocuspocus/extension-logger';
 
-import router from './controllers/router.js';
-import { Config, mergeConfig } from './utils/Config.js';
-import { injectContext } from './middlewares/Context.js';
-import { ExceptionHandler } from './middlewares/ExceptionHandler.js';
-import { LogHandler } from './middlewares/Logger.js';
-import { Logger } from './utils/logger/index.js';
+import { getRouter } from './controllers/router';
+import { Config, mergeConfig } from './utils/Config';
+import { injectContext } from './middlewares/Context';
+import { ExceptionHandler } from './middlewares/ExceptionHandler';
+import { LogHandler } from './middlewares/Logger';
+import { Logger } from './utils/logger/index';
 import { DataSource } from 'typeorm';
-import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions.js';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import bodyParser from 'body-parser';
+import { getModelList } from './models/model';
 
 class Application {
   private app: Express | null = null;
   private logger: Logger | null = null;
   private _config: Config | null = null;
   private dataSource: DataSource | null = null;
+
+  private editorApp: Hocuspocus | null = null;
 
   get config() {
     return this._config;
@@ -65,12 +72,9 @@ class Application {
     this.dataSource = new DataSource({
       type: 'mariadb',
       ...dbOptions,
-      logging: true,
+      logging: false,
       synchronize: true,
-      entities: [
-        'src/**/models/*.model.js',
-        'dist/**/models/*.model.js',
-      ],
+      entities: getModelList(),
     });
 
     await this.dataSource.initialize();
@@ -83,26 +87,50 @@ class Application {
     this.logger?.v('Database is initialized');
   }
 
-  initServer() {
+  async initServer() {
     if (!this.logger) throw Error('logger is not initialized');
     if (!this.config) throw Error('config is not loaded');
     if (!this.dataSource) throw Error('database is not initialized');
+    if (!this.editorApp) throw Error('editorServer is not initialized');
 
-    this.app = express();
+    const { app } = expressWs(express());
+    this.app = app;
 
-    this.app.use(bodyParser.json())
-    this.app.use(bodyParser.urlencoded({ extended: true }))
-
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(injectContext({
       config: this.config,
       logger: this.logger,
       db: this.dataSource,
+      editorServer: this.editorApp,
     }));
     this.app.use(LogHandler);
 
-    this.app.use('/api', router);
+    this.app.use('/api', getRouter());
 
     this.app.use(ExceptionHandler);
+  }
+
+  initEditorServer() {
+    if (!this.logger) throw Error('logger is not initialized');
+    if (!this.config) throw Error('config is not loaded');
+
+    const logger = this.logger;
+    this.editorApp = EditorServer.configure({
+      async onAuthenticate(data) {
+        logger?.d('onAuthenticate', data);
+        return {
+          user: {
+            name: 'test',
+          },
+        };
+      },
+      extensions: [
+        new EditorLogger({
+          log: (message: string) => this.logger?.i('[editor]', message),
+        })
+      ]
+    });
   }
 
   start() {
@@ -111,7 +139,6 @@ class Application {
     if (!this.app) throw Error('app is not initialized');
 
     this.logger.i('Server starting...');
-
     this.app.listen(this.config.server.port, this.config.server.host, () => {
       this.logger?.i(`Server is running at ${this.config?.server.host}:${this.config?.server.port}`);
       // this.logger?.d('Server Config:', JSON.stringify(this.config, null, 2));

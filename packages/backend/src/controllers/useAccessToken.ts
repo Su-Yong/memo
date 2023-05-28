@@ -1,9 +1,9 @@
 import JWT, { JwtPayload } from 'jsonwebtoken';
 import { z } from 'zod';
 
-import { ControllerHookContext } from './Controller.js';
-import UserSchema from '../domains/users/models/User.schema.js';
-import { CommonError } from '../models/Error.js';
+import { ControllerHookContext } from './Controller';
+import UserSchema from '../domains/users/models/User.schema';
+import { CommonError } from '../models/Error';
 
 declare module "express" {
   export interface Request  {

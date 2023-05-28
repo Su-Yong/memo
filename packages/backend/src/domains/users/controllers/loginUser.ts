@@ -1,10 +1,10 @@
 import JWT from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 
-import { createController } from '../../../controllers/Controller.js';
-import UserSchema from '../models/User.schema.js';
-import { User } from '../models/User.model.js';
-import { CommonError } from '../../../models/Error.js';
+import { createController } from '../../../controllers/Controller';
+import UserSchema from '../models/User.schema';
+import { User } from '../models/User.model';
+import { CommonError } from '../../../models/Error';
 
 export const loginUser = createController(async ({ useRequestBody, useRepository, useResponse, useConfig }) => {
   const body = useRequestBody(UserSchema.login);

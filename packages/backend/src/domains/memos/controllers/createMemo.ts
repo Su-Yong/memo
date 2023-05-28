@@ -1,10 +1,10 @@
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { createController } from '../../../controllers/Controller.js';
-import { Workspace } from '../../workspaces/models/Workspace.model.js';
-import { Memo } from '../models/Memo.model.js';
-import MemoSchema from '../models/Memo.schema.js';
-import { CommonError } from '../../../models/Error.js';
-import { User } from '../../users/models/User.model.js';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { createController } from '../../../controllers/Controller';
+import { Workspace } from '../../workspaces/models/Workspace.model';
+import { Memo } from '../models/Memo.model';
+import MemoSchema from '../models/Memo.schema';
+import { CommonError } from '../../../models/Error';
+import { User } from '../../users/models/User.model';
 
 export const createMemo = createController(async ({ context, useRequestBody, useRepository, useResponse }) => {
   const token = useAccessToken(context);

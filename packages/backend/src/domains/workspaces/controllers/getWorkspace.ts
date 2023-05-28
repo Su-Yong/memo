@@ -1,8 +1,8 @@
-import { CommonError } from '../../../models/Error.js';
-import { createController } from '../../../controllers/Controller.js';
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { Workspace } from '../models/Workspace.model.js';
-import WorkspaceSchema from '../models/Workspace.schema.js';
+import { CommonError } from '../../../models/Error';
+import { createController } from '../../../controllers/Controller';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { Workspace } from '../models/Workspace.model';
+import WorkspaceSchema from '../models/Workspace.schema';
 
 export const getWorkspace = createController(async ({ context, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);

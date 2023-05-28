@@ -1,8 +1,8 @@
 import z from 'zod';
-import { Memo } from './Memo.model.js';
-import UserSchema from '../../users/models/User.schema.js';
-import { ModifiableSchema } from '../../../models/Common.js';
-import WorkspaceSchema, { ToWorkspaceResponseOptions } from '../../workspaces/models/Workspace.schema.js';
+import { Memo } from './Memo.model';
+import UserSchema from '../../users/models/User.schema';
+import { ModifiableSchema } from '../../../models/Common';
+import WorkspaceSchema, { ToWorkspaceResponseOptions } from '../../workspaces/models/Workspace.schema';
 
 export const MemoActionsSchema = z.enum(['CREATE', 'READ', 'UPDATE', 'DELETE', 'VISIBLE', 'EDITABLE']).array();
 
@@ -17,7 +17,7 @@ type MemoTreeResponseType = z.infer<typeof MemoSchema.response> & {
 class MemoSchema extends ModifiableSchema {
   static create = z.object({
     workspaceId: z.number(),
-    parentId: z.number().optional(),
+    parentId: z.string().optional(),
 
     name: z.string().min(1),
     content: z.string(),
@@ -35,7 +35,7 @@ class MemoSchema extends ModifiableSchema {
   });
 
   static override response = ModifiableSchema.response.extend({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
     content: z.string().optional(),
     image: z.string().optional(),

@@ -1,4 +1,4 @@
-import { createMiddleware } from './Middleware.js';
+import { createMiddleware } from './Middleware';
 
 export const LogHandler = createMiddleware((request, _, next) => {
   if (process.env.NODE_ENV === 'development') {

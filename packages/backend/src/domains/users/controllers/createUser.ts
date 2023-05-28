@@ -1,7 +1,7 @@
-import { CommonError } from '../../../models/Error.js';
-import { createController } from '../../../controllers/Controller.js';
-import { User } from '../models/User.model.js';
-import UserSchema from '../models/User.schema.js';
+import { CommonError } from '../../../models/Error';
+import { createController } from '../../../controllers/Controller';
+import { User } from '../models/User.model';
+import UserSchema from '../models/User.schema';
 
 import { hash } from 'bcrypt';
 

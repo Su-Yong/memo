@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getWorkspace } from './getWorkspace.js';
-import { createWorkspace } from './createWorkspace.js';
-import { addMemberToWorkspace, removeMemberToWorkspace } from './updateWorkspaceMember.js';
-import { updateWorkspace } from './updateWorkspace.js';
-import { deleteWorkspace } from './deleteWorkspace.js';
+import { getWorkspace } from './getWorkspace';
+import { createWorkspace } from './createWorkspace';
+import { addMemberToWorkspace, removeMemberToWorkspace } from './updateWorkspaceMember';
+import { updateWorkspace } from './updateWorkspace';
+import { deleteWorkspace } from './deleteWorkspace';
 
 export const workspaceRouter = Router({ mergeParams: true });
 

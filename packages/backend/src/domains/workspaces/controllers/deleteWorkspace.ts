@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
-import { createController } from '../../../controllers/Controller.js';
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { Workspace } from '../models/Workspace.model.js';
-import { CommonError } from '../../../models/Error.js';
+import { createController } from '../../../controllers/Controller';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { Workspace } from '../models/Workspace.model';
+import { CommonError } from '../../../models/Error';
 
 export const deleteWorkspace = createController(async ({ context, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);

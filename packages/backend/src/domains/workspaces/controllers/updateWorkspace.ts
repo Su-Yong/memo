@@ -1,9 +1,9 @@
-import { User } from '../../users/models/User.model.js';
-import { createController } from '../../../controllers/Controller.js';
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { Workspace } from '../models/Workspace.model.js';
-import WorkspaceSchema from '../models/Workspace.schema.js';
-import { CommonError } from '../../../models/Error.js';
+import { User } from '../../users/models/User.model';
+import { createController } from '../../../controllers/Controller';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { Workspace } from '../models/Workspace.model';
+import WorkspaceSchema from '../models/Workspace.schema';
+import { CommonError } from '../../../models/Error';
 
 export const updateWorkspace = createController(async ({ context, useRepository, useResponse, useRequestBody, useParams }) => {
   const token = useAccessToken(context);

@@ -1,10 +1,12 @@
-import { Workspace } from '../../workspaces/models/Workspace.model.js';
+import { Workspace } from '../../workspaces/models/Workspace.model';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
-import UserSchema from './User.schema.js';
+import UserSchema from './User.schema';
 import { z } from 'zod';
+import { registerModel } from '@/models/model';
 
 export type UserPermission = 'admin' | 'member' | 'guest';
 
+@registerModel
 @Entity()
 export class User implements IUser {
   @PrimaryGeneratedColumn()

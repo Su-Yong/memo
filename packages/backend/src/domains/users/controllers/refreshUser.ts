@@ -1,9 +1,9 @@
-import { createController } from '../../../controllers/Controller.js';
-import { User } from '../models/User.model.js';
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
+import { createController } from '../../../controllers/Controller';
+import { User } from '../models/User.model';
+import { useAccessToken } from '../../../controllers/useAccessToken';
 import JWT from 'jsonwebtoken';
-import UserSchema from '../models/User.schema.js';
-import { CommonError } from '../../../models/Error.js';
+import UserSchema from '../models/User.schema';
+import { CommonError } from '../../../models/Error';
 
 export const refreshUser = createController(async ({ useRepository, useResponse, useConfig, context }) => {
   const user = useAccessToken(context);

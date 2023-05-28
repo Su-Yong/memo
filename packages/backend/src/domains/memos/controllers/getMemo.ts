@@ -1,9 +1,9 @@
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { createController } from '../../../controllers/Controller.js';
-import { Memo } from '../models/Memo.model.js';
-import { CommonError } from '../../../models/Error.js';
-import MemoSchema from '../models/Memo.schema.js';
-import { Workspace } from '../../workspaces/models/Workspace.model.js';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { createController } from '../../../controllers/Controller';
+import { Memo } from '../models/Memo.model';
+import { CommonError } from '../../../models/Error';
+import MemoSchema from '../models/Memo.schema';
+import { Workspace } from '../../workspaces/models/Workspace.model';
 import { IsNull } from 'typeorm';
 
 export const getMemo = createController(async ({ context, useRepository, useResponse, useParams, useQuery }) => {
@@ -15,7 +15,7 @@ export const getMemo = createController(async ({ context, useRepository, useResp
   const repository = useRepository(Memo, 'tree');
 
   const memo = await repository.findOne({
-    where: { id: Number(params.id) },
+    where: { id: params.id },
     relations: ['workspace', 'workspace.members', 'workspace.owner'],
   });
   if (!memo) throw CommonError.MEMO_NOT_FOUND();

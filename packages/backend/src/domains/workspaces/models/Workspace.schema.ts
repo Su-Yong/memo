@@ -1,7 +1,7 @@
 import z from 'zod';
-import { Workspace } from './Workspace.model.js';
-import UserSchema from '../../users/models/User.schema.js';
-import { ModifiableSchema } from '../../../models/Common.js';
+import { Workspace } from './Workspace.model';
+import UserSchema from '../../users/models/User.schema';
+import { ModifiableSchema } from '../../../models/Common';
 
 export const WorkspaceActionsSchema = z.enum(['CREATE', 'READ', 'UPDATE', 'DELETE', 'VISIBLE', 'EDITABLE']).array();
 

@@ -1,2 +1,2 @@
-export * from './types.js';
-export * from './ConsoleLogger.js';
+export * from './types';
+export * from './ConsoleLogger';

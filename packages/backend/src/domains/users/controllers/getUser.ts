@@ -1,8 +1,8 @@
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { createController } from '../../../controllers/Controller.js';
-import { User } from '../models/User.model.js';
-import UserSchema from '../models/User.schema.js';
-import { CommonError } from '../../../models/Error.js';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { createController } from '../../../controllers/Controller';
+import { User } from '../models/User.model';
+import UserSchema from '../models/User.schema';
+import { CommonError } from '../../../models/Error';
 
 export const getUser = createController(async ({ context, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);

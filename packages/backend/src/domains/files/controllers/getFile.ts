@@ -1,8 +1,8 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { createController } from '../../../controllers/Controller.js';
-import { FileMetadata } from '../models/FileMetadata.model.js';
-import { CommonError } from '../../../models/Error.js';
+import { createController } from '../../../controllers/Controller';
+import { FileMetadata } from '../models/FileMetadata.model';
+import { CommonError } from '../../../models/Error';
 
 export const getFile = createController(async ({ context, useConfig, useParams, useRepository }) => {
   const params = useParams();

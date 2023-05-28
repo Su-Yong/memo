@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { uploadFile } from './uploadFile.js';
-import { getFile } from './getFile.js';
-import { deleteFile } from './deleteFile.js';
+import { uploadFile } from './uploadFile';
+import { getFile } from './getFile';
+import { deleteFile } from './deleteFile';
 
 export const fileRouter = Router({ mergeParams: true });
 

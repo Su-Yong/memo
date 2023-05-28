@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { CreatableSchema } from '../../../models/Common.js';
-import { FileMetadata } from './FileMetadata.model.js';
+import { CreatableSchema } from '../../../models/Common';
+import { FileMetadata } from './FileMetadata.model';
 
 class FileMetadataSchema extends CreatableSchema {
   static create = z.object({

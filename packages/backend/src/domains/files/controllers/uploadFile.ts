@@ -1,13 +1,13 @@
-import { createController } from '../../../controllers/Controller.js';
+import { createController } from '../../../controllers/Controller';
 import multer from 'multer';
-import { useAccessToken } from '../../../controllers/useAccessToken.js';
-import { FileMetadata } from '../models/FileMetadata.model.js';
+import { useAccessToken } from '../../../controllers/useAccessToken';
+import { FileMetadata } from '../models/FileMetadata.model';
 import { v4 } from 'uuid';
 import md5 from 'md5';
 import fs from 'node:fs/promises';
-import { User } from '../../users/models/User.model.js';
-import FileMetadataSchema from '../models/FileMetadata.schema.js';
-import { CommonError } from '../../../models/Error.js';
+import { User } from '../../users/models/User.model';
+import FileMetadataSchema from '../models/FileMetadata.schema';
+import { CommonError } from '../../../models/Error';
 
 const storage = multer.diskStorage({
   destination(req, _, callback) {

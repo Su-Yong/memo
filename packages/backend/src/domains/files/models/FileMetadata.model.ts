@@ -1,8 +1,10 @@
-import UserSchema from 'src/domains/users/models/User.schema.js';
-import { Creatable } from '../../../models/Common.js';
+import UserSchema from '@/domains/users/models/User.schema';
+import { Creatable } from '../../../models/Common';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { z } from 'zod';
+import { registerModel } from '@/models/model';
 
+@registerModel
 @Entity()
 export class FileMetadata extends Creatable {
   @PrimaryColumn('uuid')

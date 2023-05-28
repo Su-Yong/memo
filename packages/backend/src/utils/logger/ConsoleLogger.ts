@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 import dayjs from 'dayjs';
-import { LogType } from './types.js';
+import { LogType } from './types';
 
 const LogColor = {
   debug: 'inverse',

@@ -1,16 +1,18 @@
-import UserSchema from '../../users/models/User.schema.js';
-import { Workspace } from '../../workspaces/models/Workspace.model.js';
-import { AvailableAction, Modifiable } from '../../../models/Common.js';
+import UserSchema from '../../users/models/User.schema';
+import { Workspace } from '../../workspaces/models/Workspace.model';
+import { AvailableAction, Modifiable } from '../../../models/Common';
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, Tree, TreeChildren, TreeParent } from 'typeorm';
 import { z } from 'zod';
+import { registerModel } from '@/models/model';
 
 export type MemoAction = AvailableAction | 'VISIBLE' | 'EDITABLE';
 
+@registerModel
 @Entity()
 @Tree('closure-table')
 export class Memo extends Modifiable {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   name!: string;

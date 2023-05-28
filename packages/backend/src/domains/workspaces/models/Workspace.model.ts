@@ -1,12 +1,14 @@
-import UserSchema from '../../users/models/User.schema.js';
-import { User } from '../../users/models/User.model.js';
+import UserSchema from '../../users/models/User.schema';
+import { User } from '../../users/models/User.model';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, JoinColumn, SaveOptions, OneToMany } from 'typeorm'
 import { z } from 'zod';
-import { AvailableAction, Modifiable } from '../../../models/Common.js';
-import { Memo } from '../../memos/models/Memo.model.js';
+import { AvailableAction, Modifiable } from '../../../models/Common';
+import { Memo } from '../../memos/models/Memo.model';
+import { registerModel } from '@/models/model';
 
 export type WorkspaceAction = AvailableAction | 'VISIBLE' | 'EDITABLE';
 
+@registerModel
 @Entity()
 export class Workspace extends Modifiable {
   @PrimaryGeneratedColumn()

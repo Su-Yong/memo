@@ -1,5 +1,5 @@
-import Application from './application.js';
-import FileLogger from './utils/logger/FileLogger.js';
+import Application from './application';
+import FileLogger from './utils/logger/FileLogger';
 
 import 'reflect-metadata';
 
@@ -20,7 +20,9 @@ import 'reflect-metadata';
     database: app.config.database.database,
   });
 
+  app.initEditorServer();
   app.initServer();
+
   app.start();
 })().catch((err) => {
   console.error('Cannot start server', err);

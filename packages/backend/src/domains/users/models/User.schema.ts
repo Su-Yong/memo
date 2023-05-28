@@ -1,5 +1,5 @@
 import z from 'zod';
-import { IUser } from './User.model.js';
+import { IUser } from './User.model';
 
 class UserSchema {
   static create = z.object({

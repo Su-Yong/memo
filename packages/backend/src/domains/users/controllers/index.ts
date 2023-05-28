@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { createUser } from './createUser.js';
-import { loginUser } from './loginUser.js';
-import { refreshUser } from './refreshUser.js';
-import { updateUser } from './updateUser.js';
-import { getUser } from './getUser.js';
+import { createUser } from './createUser';
+import { loginUser } from './loginUser';
+import { refreshUser } from './refreshUser';
+import { updateUser } from './updateUser';
+import { getUser } from './getUser';
 
 export const userRouter = Router({ mergeParams: true });
 

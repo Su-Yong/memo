@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { HttpError } from 'http-errors';
-import { CommonError } from '../models/Error.js';
+import { CommonError } from '../models/Error';
 
 export const ExceptionHandler = (err: Error, request: Request, response: Response, next: NextFunction) => {
   if (response.headersSent) {

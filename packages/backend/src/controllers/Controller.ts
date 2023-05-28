@@ -4,10 +4,10 @@ import z, { AnyZodObject } from 'zod';
 
 import { O } from 'ts-toolbelt';
 
-import { ContextRequest, createMiddleware } from '../middlewares/Middleware.js';
+import { ContextRequest, createMiddleware } from '../middlewares/Middleware';
 import { EntityTarget, ObjectLiteral, Repository, TreeRepository } from 'typeorm';
-import { Config } from '../utils/Config.js';
-import { CommonError } from '../models/Error.js';
+import { Config } from '../utils/Config';
+import { CommonError } from '../models/Error';
 
 export interface ControllerHookContext {
   request: ContextRequest;

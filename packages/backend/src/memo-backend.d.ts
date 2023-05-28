@@ -5,6 +5,7 @@ declare namespace NodeJS {
       SERVER_PORT: string | undefined;
       SERVER_HOST: string | undefined;
       SERVER_FILE_PATH: string | undefined;
+      SERVER_EDITOR_PORT: string | undefined;
 
       LOGGER_PATH: string | undefined;
       LOGGER_TIMESTAMP_FORMAT: string | undefined;
@@ -24,12 +25,14 @@ declare namespace NodeJS {
 import { Config } from "src/utils/Config.js";
 import { Logger } from "src/utils/logger/index.ts";
 import { DataSource } from 'typeorm';
+import { Hocuspocus } from '@hocuspocus/server';
 
 declare module "express" {
   export interface Request  {
     config?: Config;
     logger?: Logger;
     db?: DataSource;
+    editorServer?: Hocuspocus;
     isContextInjected?: boolean;
   }
 }

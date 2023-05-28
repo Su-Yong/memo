@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'node:fs';
 
-import ConsoleLogger from './ConsoleLogger.js';
-import { LogType } from './types.js';
+import ConsoleLogger from './ConsoleLogger';
+import { LogType } from './types';
 import dayjs from 'dayjs';
 
 class FileLogger extends ConsoleLogger {

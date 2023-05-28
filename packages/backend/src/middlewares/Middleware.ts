@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
-export type ContextRequest = Omit<Request, 'config' | 'logger' | 'db'> & Required<Pick<Request, 'config' | 'logger' | 'db'>>;
+type ContextField = 'config' | 'logger' | 'db' | 'editorServer';
+export type ContextRequest = Omit<Request, ContextField> & Required<Pick<Request, ContextField>>;
 export type Middleware = (request: Request, response: Response, next: NextFunction) => void;
 export type ContextMiddleware = (request: ContextRequest, response: Response, next: NextFunction) => void | Promise<void>;
 
