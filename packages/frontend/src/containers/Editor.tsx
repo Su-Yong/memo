@@ -5,16 +5,19 @@ import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { CLIENT_USER } from '../store/auth';
+import { ACCESS_TOKEN, CLIENT_USER } from '../store/auth';
+import { getRandomColor } from '../utils/colors';
 
 export interface EditorProps {
   id: string;
 }
 const Editor = ({ id }: EditorProps) => {
+  const token = useAtomValue(ACCESS_TOKEN);
   const provider = useMemo(() => new HocuspocusProvider({
     url: `wss://local.suyong.me/ws/memos/${id}`,
+    token,
     name: id,
-  }), [id]);
+  }), [id, token]);
 
   const clientUser = useAtomValue(CLIENT_USER);
 
@@ -30,7 +33,8 @@ const Editor = ({ id }: EditorProps) => {
         provider: provider,
         user: {
           name: clientUser?.name,
-          color: '#f783ac',
+          color: getRandomColor(),
+          avatar: clientUser?.profile,
         },
       }),
     ],
@@ -39,7 +43,7 @@ const Editor = ({ id }: EditorProps) => {
         class: 'prose dark:prose-invert prose-base sm:prose-sm lg:prose-lg focus:outline-none',
       },
     },
-    content: '<p>Hello World!</p>',
+    content: '',
     autofocus: true,
   });
 
