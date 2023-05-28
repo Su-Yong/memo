@@ -18,6 +18,8 @@ import { DataSource } from 'typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import bodyParser from 'body-parser';
 import { getModelList } from './models/model';
+import { getDatabaseExtension } from './domains/memos/services/database';
+import { getAuthEvent } from './domains/memos/services/auth';
 
 class Application {
   private app: Express | null = null;
@@ -114,22 +116,37 @@ class Application {
   initEditorServer() {
     if (!this.logger) throw Error('logger is not initialized');
     if (!this.config) throw Error('config is not loaded');
+    if (!this.dataSource) throw Error('db is not loaded');
 
-    const logger = this.logger;
+    const self = this;
     this.editorApp = EditorServer.configure({
-      async onAuthenticate(data) {
-        logger?.d('onAuthenticate', data);
-        return {
-          user: {
-            name: 'test',
-          },
-        };
+      async connected() {
+        self.logger?.d("connections:", self.editorApp?.getConnectionsCount());
       },
+      async onConnect(data) {
+        self.logger?.d(`"${data}" has connected.`);
+      },
+      async onDestroy(data) {
+        // Output some information
+        self.logger?.d(`Server was shut down!`);
+      },
+      async onDisconnect(data) {
+        // Output some information
+        self.logger?.d(`"${data}" has disconnected.`);
+      },
+      onAuthenticate: getAuthEvent({
+        config: this.config,
+      }),
       extensions: [
         new EditorLogger({
           log: (message: string) => this.logger?.i('[editor]', message),
-        })
-      ]
+        }),
+        getDatabaseExtension({
+          config: this.config,
+          logger: this.logger,
+          db: this.dataSource,
+        }),
+      ],
     });
   }
 

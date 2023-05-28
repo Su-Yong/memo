@@ -20,8 +20,8 @@ export class Memo extends Modifiable {
   @Column({ nullable: true })
   image?: string;
 
-  @Column()
-  content!: string;
+  @Column({ type: 'longtext', nullable: true })
+  content?: string;
 
   @Column({
     type: 'enum',
@@ -58,6 +58,8 @@ export class Memo extends Modifiable {
 
     return isMember || isOwner;
   }
+
+  canUpdate = this.canRead;
 
   // async canUpdate(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
   //   const isOwner = (await this.owner)?.id === user.id;

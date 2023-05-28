@@ -11,7 +11,7 @@ declare module "express" {
   }
 }
 
-export const useAccessToken = (context: ControllerHookContext) => {
+export const useAccessToken = (context: Pick<ControllerHookContext, 'request'>) => {
   const { request } = context;
 
   const auth = request.headers.authorization;

@@ -5,6 +5,7 @@ import { Memo } from '../models/Memo.model';
 import MemoSchema from '../models/Memo.schema';
 import { CommonError } from '../../../models/Error';
 import { User } from '../../users/models/User.model';
+import * as Y from 'yjs';
 
 export const createMemo = createController(async ({ context, useRequestBody, useRepository, useResponse }) => {
   const token = useAccessToken(context);
@@ -31,8 +32,10 @@ export const createMemo = createController(async ({ context, useRequestBody, use
     parentMemo.children.push(memo);
   }
 
+  const doc = new Y.Doc();
+  const rawDocData = Y.encodeStateAsUpdate(doc);
   memo.name = body.name;
-  memo.content = body.content;
+  memo.content = Buffer.from(rawDocData).toString('base64');
   memo.image = body.image;
   if (body.visibleRange) memo.visibleRange = body.visibleRange;
   if (body.editableRange) memo.editableRange = body.editableRange;

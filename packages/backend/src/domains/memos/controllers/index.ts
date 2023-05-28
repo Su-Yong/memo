@@ -10,7 +10,7 @@ export const getMemoRouter = () => {
   memoRouter.post('/memos', createMemo);
   memoRouter.get('/workspaces/:workspaceId/memos', getMemos);
   memoRouter.get('/memos/:id', getMemo);
-  memoRouter.ws('/memos/:id', editMemo as WebsocketRequestHandler);
+  memoRouter.ws('/memos/:document', editMemo as WebsocketRequestHandler);
 
   return memoRouter;
 };
