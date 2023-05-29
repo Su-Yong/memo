@@ -20,15 +20,13 @@ class MemoSchema extends ModifiableSchema {
     parentId: z.string().optional(),
 
     name: z.string().min(1),
-    content: z.string(),
     image: z.string().optional(),
     visibleRange: z.enum(['public', 'link', 'member']).optional(),
     editableRange: z.enum(['public', 'link', 'member', 'owner']).optional(),
   });
 
   static update = z.object({
-    name: z.string().min(12).optional(),
-    content: z.string().optional(),
+    name: z.string().min(1).optional(),
     image: z.string().optional(),
     visibleRange: z.enum(['public', 'link', 'member']).optional(),
     editableRange: z.enum(['public', 'link', 'member', 'owner']).optional(),
