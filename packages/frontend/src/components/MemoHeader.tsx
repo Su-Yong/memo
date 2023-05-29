@@ -18,12 +18,13 @@ const MemoHeader = () => {
       className={`
         w-full flex flex-col justify-start items-start gap-2 py-2
         bg-gray-100 border-b-[1px] border-gray-300
+        dark:bg-gray-900 dark:border-gray-700
       `}
     >
       <MemoTab />
       <div className={'w-full flex justify-start items-center gap-2 px-4'}>
         <input
-          className={'w-full font-bold text-2xl outline-none bg-transparent'}
+          className={'w-full font-bold text-2xl outline-none bg-transparent text-gray-900 dark:text-gray-100'}
           value={memo?.name}
           onChange={() => {}}
         />

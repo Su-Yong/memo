@@ -76,7 +76,7 @@ const LoginPage = () => {
         >
           {
             isLoading
-              ? <Spinner className={'w-4 h-4 stroke-gray-100'} />
+              ? <Spinner className={'w-4 h-4 stroke-gray-100 dark:stroke-gray-900'} />
               : <i className={'material-symbols-outlined icon text-base'}>
                 login
               </i>

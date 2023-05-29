@@ -7,15 +7,17 @@ import { fetchWorkspace } from '../api/workspace';
 import { useCallback, useState } from 'react';
 import { Workspace } from '../models/Workspace';
 import { uploadFile } from '../api/file';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { CLIENT_USER } from '../store/auth';
 import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
 import MemoList from '../containers/MemoList';
 import Spinner from '../components/common/Spinner';
 import { SELECTED_MEMO_ID } from '../store/memo';
+import { THEME_MODE } from '../store/preference';
 
 const MemoPage = () => {
+  const [themeMode, setThemeMode] = useAtom(THEME_MODE);
   const queryClient = useQueryClient();
   const clientUser = useAtomValue(CLIENT_USER);
   const { data: workspaces } = useQuery(['my-workspaces'], async () => fetchWorkspace());
@@ -46,8 +48,14 @@ const MemoPage = () => {
     profileMutation.mutate(file);
   }, [profileMutation]);
 
+  const onToggleTheme = useCallback(() => {
+    if (themeMode === 'light') setThemeMode('dark');
+    else if (themeMode === 'dark') setThemeMode('system');
+    else if (themeMode === 'system') setThemeMode('light');
+  }, [themeMode]);
+
   return (
-    <div className={'w-full h-full bg-gray-100'}>
+    <div className={'w-full h-full bg-gray-100 dark:bg-gray-900'}>
       <Allotment separator={true}>
         <Allotment.Pane
           minSize={64}
@@ -76,9 +84,16 @@ const MemoPage = () => {
             </i>
           </button>
           <div className={'flex-1'}></div>
-          <div className={'bg-gray-300 px-3 h-[1px]'}></div>
+          <div className={'bg-gray-300 dark:bg-gray-700 px-3 h-[1px]'}></div>
+          <button className={'relative btn-text btn-icon flex'} onClick={onToggleTheme}>
+            <i className={'material-symbols-outlined icon'}>
+              {themeMode === 'system' && 'brightness_auto'}
+              {themeMode === 'dark' && 'dark_mode'}
+              {themeMode === 'light' && 'light_mode'}
+            </i>
+          </button>
           <button className={'relative btn-text btn-icon flex'}>
-            <label className={'rounded-full w-8 h-8 overflow-hidden flex justify-center items-center bg-gray-200'}>
+            <label className={'rounded-full w-8 h-8 overflow-hidden flex justify-center items-center bg-gray-200 dark:bg-gray-800'}>
               {
                 clientUser?.profile
                   ? <img src={clientUser?.profile} className={'w-full h-full object-cover'} />
@@ -95,12 +110,12 @@ const MemoPage = () => {
           snap
           minSize={210}
           preferredSize={280}
-          className={`w-full h-full bg-gray-100`}
+          className={`w-full h-full bg-gray-100 dark:bg-gray-900`}
         >
           {selectedWorkspace && <MemoList workspace={selectedWorkspace} />}
           {!selectedWorkspace && (
             <div className={'w-full h-full flex justify-center items-center p-4'}>
-              <div className={'text-gray-400 flex flex-col justify-center items-center'}>
+              <div className={'text-gray-400 dark:text-gray-600 flex flex-col justify-center items-center'}>
                 <i className={'material-symbols-outlined icon text-6xl'}>
                   folder
                 </i>
@@ -111,7 +126,7 @@ const MemoPage = () => {
             </div>
           )}
         </Allotment.Pane>
-        <Allotment.Pane minSize={210} className={'bg-gray-100'}>
+        <Allotment.Pane minSize={210} className={'bg-gray-100 dark:bg-gray-900'}>
           <section className={'w-full h-full flex flex-col justify-start items-stretch'}>
             {typeof selectedId === 'string' && (
               <>
@@ -121,7 +136,7 @@ const MemoPage = () => {
             )}
             {typeof selectedId !== 'string' && (
               <div className={'w-full h-full flex justify-center items-center'}>
-                <div className={'text-gray-400 flex flex-col justify-center items-center'}>
+                <div className={'text-gray-400 dark:text-gray-600 flex flex-col justify-center items-center'}>
                   <i className={'material-symbols-outlined icon text-6xl'}>
                     edit
                   </i>

@@ -10,7 +10,7 @@ const MemoTab = () => {
     <div
       className={`
         w-full h-10 flex flex-row justify-start items-center gap-2 px-3
-        bg-gray-100 overflow-x-auto
+        bg-gray-100 overflow-x-auto dark:bg-gray-900
       `}
     >
       {memoIdList.map((memoId) => (

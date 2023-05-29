@@ -14,7 +14,7 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
   const setSelectedMemoId = useSetAtom(SELECTED_MEMO_ID);
   const setTabMemoIdList = useSetAtom(TAB_MEMO_ID_LIST);
 
-  const { data: memo } = useQuery(
+  const { data: memo, isLoading, error } = useQuery(
     ['memo', memoId],
     async () => fetchMemo(memoId),
   );
@@ -34,17 +34,19 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
       className={cx(
         `
           w-fit min-w-fit flex flex-row justify-between items-center gap-2
-          pl-3 pr-1 py-1 bg-gray-50 rounded-md shadow-sm
+          pl-3 pr-1 py-1 bg-gray-50 rounded-md shadow-sm dark:bg-gray-950
           select-none cursor-pointer truncate
         `,
-        selected && 'bg-primary-100 font-bold',
+        !selected && 'text-gray-900 dark:text-gray-100',
+        selected && 'bg-primary-100 text-primary-500 font-bold dark:bg-primary-900',
       )}
       onClick={onClick}
     >
       <span className={'shrink-1 flex justify-start items-center gap-2'}>
         {memo && memo.name}
-        {!memo && <Spinner className={'w-4 h-4 stroke-gray-300'} />}
-        {!memo && '로딩중...'}
+        {isLoading && <Spinner className={'w-4 h-4 stroke-gray-300 dark:stroke-700'} />}
+        {isLoading && '로딩중...'}
+        {!memo && !!error && '오류 발생'}
       </span>
       <button className={'btn-text btn-icon p-1 flex shrink-0'} onClick={onClose}>
         <i className={'material-symbols-outlined icon text-sm'}>

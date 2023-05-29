@@ -4,9 +4,10 @@ import { Memo } from '../models/Memo';
 export interface FetchMemoOptions {
   as?: 'default' | 'tree';
 }
-export const fetchMemo = async (memoId: number, { as = 'default' }: FetchMemoOptions = {}): Promise<Memo> => {
+export const fetchMemo = async (memoId: string, { as = 'default' }: FetchMemoOptions = {}): Promise<Memo> => {
   const response = await axios.get(`/memos/${memoId}?as=${as}`);
 
+  console.log('fetchMemo', memoId);
   return response.data;
 };
 

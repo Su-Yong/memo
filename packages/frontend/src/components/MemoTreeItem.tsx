@@ -39,8 +39,11 @@ const MemoTreeItem = ({
           flex flex-row justfiy-start items-center p-2
           cursor-pointer rounded-lg transition-colors ease-out
           hover:bg-gray-200 active:bg-gray-300 focus:bg-gray-300
+          dark:hover:bg-gray-800 dark:active:bg-gray-700 dark:focus:bg-gray-700
         `,
-        selectedId === memo.id && 'bg-primary-100 text-primary-500 hover:bg-primary-200 active:bg-primary-300 focus:bg-primary-300',
+        selectedId !== memo.id && `text-gray-900 dark:text-gray-100`,
+        selectedId === memo.id && `bg-primary-100 text-primary-500 hover:bg-primary-200 active:bg-primary-300 focus:bg-primary-300
+       dark:bg-primary-950 dark:hover:bg-primary-900 dark:active:bg-primary-800 dark:focus:bg-primary-800`,
       )}
       onClick={onBaseClick}
     >

@@ -23,9 +23,9 @@ const MemoList = ({ workspace }: MemoListProps) => {
   }, []);
 
   return (
-    <div className={'flex flex-col justify-start items-stretch'}>
+    <div className={'flex flex-col justify-start items-stretch bg-transparent'}>
       <div className={'w-full h-22 p-3 flex flex-col justify-start items-start'}>
-        <h3 className={'w-full flex justify-between items-center font-bold text-xl'}>
+        <h3 className={'w-full flex justify-between items-center font-bold text-xl text-gray-900 dark:text-gray-100'}>
           {workspace.name}
           <button className={'btn-text btn-icon flex'}>
             <i className={'material-symbols-outlined icon'}>
@@ -33,11 +33,11 @@ const MemoList = ({ workspace }: MemoListProps) => {
             </i>
           </button>
         </h3>
-        <span className={'text-md'}>
+        <span className={'text-md text-gray-900 dark:text-gray-100'}>
           {workspace.description}
         </span>
       </div>
-      <div className={'w-full h-[1px] bg-gray-300 '} />
+      <div className={'w-full h-[1px] bg-gray-300 dark:bg-gray-700'} />
       <div className={'w-full p-3 flex flex-col justify-start items-stretch'}>
         {memoList?.map((memo) => (
           <MemoTree

@@ -7,11 +7,14 @@ import { useHydrateAtoms } from 'jotai/react/utils'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ACCESS_TOKEN } from './store/auth';
 import { queryClientAtom } from 'jotai-tanstack-query';
+import { useEffect } from 'react';
+import { THEME_MODE } from './store/preference';
+import { useMediaQuery } from './hooks/useMediaQuery';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 60, // 1시간
+      staleTime: 1000 * 10, // 10초
     },
   },
 });
@@ -24,6 +27,17 @@ const HydrateAtoms = ({ children }: { children: JSX.Element }) => {
 
 const App = () => {
   const isLogin = useAtomValue(ACCESS_TOKEN);
+  const themeMode = useAtomValue(THEME_MODE);
+
+  const isSystemDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  useEffect(() => {
+    if (themeMode === 'dark' || (themeMode === 'system' && isSystemDarkMode)) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [themeMode, isSystemDarkMode]);
 
   return (
     <QueryClientProvider client={queryClient}>
