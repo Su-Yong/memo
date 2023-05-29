@@ -10,6 +10,7 @@ import { getRandomColor } from '../utils/colors';
 
 export interface EditorProps {
   id: string;
+  
 }
 const Editor = ({ id }: EditorProps) => {
   const token = useAtomValue(ACCESS_TOKEN);
@@ -34,7 +35,31 @@ const Editor = ({ id }: EditorProps) => {
         user: {
           name: clientUser?.name,
           color: getRandomColor(),
-          avatar: clientUser?.profile,
+          profile: clientUser?.profile,
+        },
+        render: (user) => {
+          const cursor = document.createElement('span');
+          cursor.classList.add('collaboration-cursor__caret');
+          cursor.style.setProperty('--color', user.color);
+
+          const container = document.createElement('span');
+          container.classList.add('collaboration-cursor__container');
+
+          const label = document.createElement('div');
+          label.classList.add('collaboration-cursor__label');
+          label.style.setProperty('--color', user.color);
+
+          const profile = document.createElement('img');
+          profile.classList.add('collaboration-cursor__profile');
+          profile.src = user.profile;
+          profile.style.setProperty('--color', user.color);
+
+          label.insertBefore(document.createTextNode(user.name), null);
+          container.insertBefore(profile, null);
+          container.insertBefore(label, null);
+          cursor.insertBefore(container, null);
+
+          return cursor;
         },
       }),
     ],
