@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { ACCESS_TOKEN, CLIENT_USER } from '../store/auth';
 import { getRandomColor } from '../utils/colors';
+import React from 'react';
 
 export interface EditorProps {
   id: string;
@@ -77,4 +78,4 @@ const Editor = ({ id }: EditorProps) => {
   );
 };
 
-export default Editor;
+export default React.memo(Editor);

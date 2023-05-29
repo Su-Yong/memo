@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Workspace } from '../models/Workspace';
-import { fetchMemoByWorkspace } from '../api/memo';
+import { createMemo, fetchMemoByWorkspace } from '../api/memo';
 import MemoTree from './MemoTree';
 import { useCallback } from 'react';
 import { Memo } from '../models/Memo';
@@ -11,10 +11,20 @@ export interface MemoListProps {
   workspace: Workspace;
 }
 const MemoList = ({ workspace }: MemoListProps) => {
+  const queryClient = useQueryClient();
+
   const { data: memoList } = useQuery(
     ['memo-list', workspace.id],
     async () => fetchMemoByWorkspace(workspace.id, { as: 'tree' }),
   );
+  const addMemoMutation = useMutation(async () => {
+    await createMemo({
+      workspaceId: workspace.id,
+      name: '새로운 메모',
+    });
+
+    await queryClient.invalidateQueries(['memo-list', workspace.id]);
+  });
 
   const [selectedId, setSelectedId] = useAtom(SELECTED_MEMO_ID);
 
@@ -47,7 +57,10 @@ const MemoList = ({ workspace }: MemoListProps) => {
             onSelect={onSelect}
           />
         ))}
-        <button className={'btn-secondary flex justify-center items-center gap-1'}>
+        <button
+          className={'btn-secondary flex justify-center items-center gap-1'}
+          onClick={() => addMemoMutation.mutate()}
+        >
           <i className={'material-symbols-outlined icon'}>
             add
           </i>

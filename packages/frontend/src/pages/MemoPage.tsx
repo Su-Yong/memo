@@ -131,7 +131,7 @@ const MemoPage = () => {
             {typeof selectedId === 'string' && (
               <>
                 <MemoHeader />
-                <Editor id={selectedId} />
+                <Editor key={selectedId} id={selectedId} />
               </>
             )}
             {typeof selectedId !== 'string' && (

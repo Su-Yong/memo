@@ -11,3 +11,15 @@ export interface Memo extends Modifiable {
 
   children?: Memo[];
 }
+
+export interface RequestMemo {
+  workspaceId: number;
+  parentId?: number;
+
+  name: string;
+  image?: string;
+  visibleRange?: 'public' | 'link' | 'member';
+  editableRange?: 'public' | 'link' | 'member' | 'owner';
+}
+
+export type UpdateMemo = Partial<Omit<RequestMemo, 'workspaceId' | 'parentId'>>;
