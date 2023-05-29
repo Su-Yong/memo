@@ -1,3 +1,4 @@
+import { HocuspocusProvider } from '@hocuspocus/provider';
 import { SetStateAction, atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
@@ -17,3 +18,5 @@ export const TAB_MEMO_ID_LIST = atom(
   }
 )
 export const TREE_OPEN_MEMO_ID_LIST = atomWithStorage<string[]>('opened-tree', []);
+
+export const MEMO_PROVIDER_MAP = atom(new Map<string, HocuspocusProvider>());
