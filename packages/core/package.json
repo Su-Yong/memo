@@ -1,0 +1,33 @@
+{
+  "name": "@suyong/memo-core",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "default": "./dist/index.esm.js",
+      "import": "./dist/index.esm.js",
+      "node": "./dist/index.umd.js",
+      "require": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "rollup -c --configPlugin @rollup/plugin-typescript",
+    "dev": "rollup -c --watch --configPlugin @rollup/plugin-typescript"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.1",
+    "rollup": "^3.23.0",
+    "rollup-plugin-dts": "^5.3.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.21.4"
+  }
+}

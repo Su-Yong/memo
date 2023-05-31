@@ -1,13 +1,13 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { createController } from '../../../controllers/Controller';
-import { FileMetadata } from '../models/FileMetadata.model';
 import { CommonError } from '../../../models/Error';
+import { FileMetadataDAO } from '../models/FileMetadata.model';
 
 export const getFile = createController(async ({ context, useConfig, useParams, useRepository }) => {
   const params = useParams();
   const config = useConfig();
-  const fileMetadataRepository = useRepository(FileMetadata);
+  const fileMetadataRepository = useRepository(FileMetadataDAO);
 
   const fileId = params.id;
   const filePath = path.join(config.server.filePath, fileId);

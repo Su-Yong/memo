@@ -1,15 +1,15 @@
 import { useAccessToken } from '../../../controllers/useAccessToken';
 import { createController } from '../../../controllers/Controller';
-import { User } from '../models/User.model';
-import UserSchema from '../models/User.schema';
 
 import { hash } from 'bcrypt';
 import { CommonError } from '../../../models/Error';
+import { UserSchema } from '@suyong/memo-core';
+import { UserDAO } from '../models/User.model';
 
 export const updateUser = createController(async ({ context, useRequestBody, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
   const body = useRequestBody(UserSchema.update);
-  const repository = useRepository(User);
+  const repository = useRepository(UserDAO);
   const params = useParams();
 
   const user = await repository.findOneBy({ email: params.email ?? token.email });
@@ -24,5 +24,5 @@ export const updateUser = createController(async ({ context, useRequestBody, use
 
   const result = await repository.save(user);
 
-  useResponse(200, UserSchema.toResponse(result));
+  useResponse(200, UserDAO.toResponse(result));
 });

@@ -1,19 +1,19 @@
 import { useAccessToken } from '../../../controllers/useAccessToken';
 import { createController } from '../../../controllers/Controller';
-import { Workspace } from '../../workspaces/models/Workspace.model';
-import { Memo } from '../models/Memo.model';
-import MemoSchema from '../models/Memo.schema';
 import { CommonError } from '../../../models/Error';
-import { User } from '../../users/models/User.model';
 import * as Y from 'yjs';
+import { MemoSchema } from '@suyong/memo-core';
+import { UserDAO } from '@/domains/users/models/User.model';
+import { WorkspaceDAO } from '@/domains/workspaces/models/Workspace.model';
+import { MemoDAO } from '../models/Memo.model';
 
 export const createMemo = createController(async ({ context, useRequestBody, useRepository, useResponse }) => {
   const token = useAccessToken(context);
   const body = useRequestBody(MemoSchema.create);
 
-  const userRepository = useRepository(User);
-  const workspaceRepository = useRepository(Workspace);
-  const memoRepository = useRepository(Memo, 'tree');
+  const userRepository = useRepository(UserDAO);
+  const workspaceRepository = useRepository(WorkspaceDAO);
+  const memoRepository = useRepository(MemoDAO, 'tree');
 
   const user = await userRepository.findOneBy({ id: token.id });
   if (!user) throw CommonError.USER_NOT_FOUND();
@@ -21,7 +21,7 @@ export const createMemo = createController(async ({ context, useRequestBody, use
   const workspace = await workspaceRepository.findOneBy({ id: body.workspaceId });
   if (!workspace) throw CommonError.WORKSPACE_NOT_FOUND();
 
-  const memo = new Memo();
+  const memo = new MemoDAO();
 
   if (body.parentId) {
     const parentMemo = await memoRepository.findOneBy({ id: body.parentId });
@@ -35,7 +35,7 @@ export const createMemo = createController(async ({ context, useRequestBody, use
   const doc = new Y.Doc();
   const rawDocData = Y.encodeStateAsUpdate(doc);
   memo.name = body.name;
-  memo.content = Buffer.from(rawDocData).toString('base64');
+  memo.content = Buffer.from(rawDocData);
   memo.image = body.image;
   if (body.visibleRange) memo.visibleRange = body.visibleRange;
   if (body.editableRange) memo.editableRange = body.editableRange;
@@ -47,7 +47,7 @@ export const createMemo = createController(async ({ context, useRequestBody, use
 
   useResponse(
     201,
-    await MemoSchema.toResponse(result, {
+    await MemoDAO.toResponse(result, {
       withWorkspace: true,
       withAvailableActions: user,
     }),

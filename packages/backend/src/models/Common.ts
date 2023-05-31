@@ -1,65 +1,48 @@
-import { z } from 'zod';
-import type { IUser } from '../domains/users/models/User.model';
 import { Entity, CreateDateColumn, UpdateDateColumn, BaseEntity, JoinColumn, ManyToOne } from 'typeorm';
-import UserSchema from '../domains/users/models/User.schema';
+import type { Creatable, CreatableResponse, Modifiable, ModifiableResponse, User } from '@suyong/memo-core';
+import { UserDAO } from '@/domains/users/models/User.model';
 
 @Entity()
-export class Creatable extends BaseEntity {
+export class CreatableDAO extends BaseEntity implements Creatable {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @ManyToOne('User', { eager: true, nullable: true })
+  @ManyToOne('UserDAO', { eager: true, nullable: true })
   @JoinColumn()
-  createdBy?: IUser;
+  createdBy?: User;
 
-  mark(user: IUser) {
+  mark(user: User) {
     if (!this.createdBy) this.createdBy = user;
+  }
+
+  static async toResponse(creatable: Creatable): Promise<CreatableResponse> {
+    return {
+      createdAt: creatable.createdAt,
+      createdBy: creatable.createdBy ? UserDAO.toResponse(creatable.createdBy) : undefined,
+    };
   }
 }
 
 @Entity()
-export class Modifiable extends Creatable {
+export class ModifiableDAO extends CreatableDAO implements Modifiable {
   @UpdateDateColumn()
   lastModifiedAt!: Date;
 
-  @ManyToOne('User', { eager: true, nullable: true })
+  @ManyToOne('UserDAO', { eager: true, nullable: true })
   @JoinColumn()
-  lastModifiedBy?: IUser;
+  lastModifiedBy?: User;
 
-  override mark(user: IUser) {
+  override mark(user: User) {
     super.mark(user);
+
     this.lastModifiedBy = user;
   }
-}
 
-export class CreatableSchema {
-  static response = z.object({
-    createdAt: z.date(),
-    createdBy: UserSchema.response.optional(),
-  });
-
-  static async toResponse(creatable: Creatable): Promise<z.infer<typeof this.response>> {
+  static override async toResponse(modifiable: Modifiable): Promise<ModifiableResponse> {
     return {
-      createdAt: creatable.createdAt,
-      createdBy: creatable.createdBy ? UserSchema.toResponse(creatable.createdBy) : undefined,
-    };
-  }
-}
-
-export class ModifiableSchema extends CreatableSchema {
-  static override response  = CreatableSchema.response.extend({
-    lastModifiedAt: z.date(),
-    lastModifiedBy: UserSchema.response.optional(),
-  });
-
-  static override async toResponse(modifiable: Modifiable): Promise<z.infer<typeof this.response>> {
-    return {
-      ...await super.toResponse(modifiable),
+      ...super.toResponse(modifiable),
       lastModifiedAt: modifiable.lastModifiedAt,
-      lastModifiedBy: modifiable.lastModifiedBy ? UserSchema.toResponse(modifiable.lastModifiedBy) : undefined,
+      lastModifiedBy: modifiable.lastModifiedBy ? UserDAO.toResponse(modifiable.lastModifiedBy) : undefined,
     };
   }
 }
-
-export type AvailableAction = 'CREATE' | 'READ' | 'UPDATE' | 'DELETE';
-export const AvailableActionsSchema = z.enum(['CREATE', 'READ', 'UPDATE', 'DELETE']).array();

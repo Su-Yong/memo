@@ -1,16 +1,21 @@
-import UserSchema from '../../users/models/User.schema';
-import { User } from '../../users/models/User.model';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, JoinColumn, SaveOptions, OneToMany } from 'typeorm'
-import { z } from 'zod';
-import { AvailableAction, Modifiable } from '../../../models/Common';
-import { Memo } from '../../memos/models/Memo.model';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, JoinColumn, OneToMany } from 'typeorm'
 import { registerModel } from '@/models/model';
+import { ModifiableDAO } from '@/models/Common';
+import { WorkspaceActions, User, Workspace, Memo } from '@suyong/memo-core';
+import { UserDAO } from '@/domains/users/models/User.model';
+import { WorkspaceResponse } from '@suyong/memo-core';
 
-export type WorkspaceAction = AvailableAction | 'VISIBLE' | 'EDITABLE';
+export type ToWorkspaceResponseOptions<Target extends Workspace | WorkspaceDAO> = {
+  withMembers?: boolean;
+} & (
+  Target extends WorkspaceDAO
+    ? { withAvailableActions?: User; }
+    : { withAvailableActions?: undefined; }
+)
 
 @registerModel
-@Entity()
-export class Workspace extends Modifiable {
+@Entity({ name: 'workspace' })
+export class WorkspaceDAO extends ModifiableDAO implements Workspace {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -37,26 +42,27 @@ export class Workspace extends Modifiable {
   })
   editableRange!: 'public' | 'link' | 'member' | 'owner';
 
-  @ManyToMany(() => User, user => user.workspaces)
-  @JoinTable()
-  members?: Promise<User[]> | User[];
+  @ManyToMany(() => UserDAO, user => user.workspaces)
+  @JoinTable({ name: 'workspace_members_user' })
+  members?: Promise<UserDAO[]> | UserDAO[];
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => UserDAO)
   @JoinColumn()
-  owner!: Promise<User> | User;
+  owner!: Promise<UserDAO> | UserDAO;
 
-  @OneToMany(() => Memo, (memo) => memo.workspace)
+  @OneToMany('MemoDAO', (memo: Memo) => memo.workspace)
   @JoinColumn()
   memos!: Promise<Memo[]> | Memo[];
 
-  async canRead(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
+  // permissions
+  async canRead(user: User): Promise<boolean> {
     const isMember = !!(await this.members)?.find((member) => member.id === user.id);
     const isOwner = (await this.owner)?.id === user.id;
 
     return isMember || isOwner;
   }
 
-  async canUpdate(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
+  async canUpdate(user: User): Promise<boolean> {
     const isOwner = (await this.owner)?.id === user.id;
 
     return isOwner || user.permission === 'admin';
@@ -64,7 +70,7 @@ export class Workspace extends Modifiable {
 
   canDelete = this.canUpdate;
 
-  async canVisible(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
+  async canVisible(user: User): Promise<boolean> {
     if (this.visibleRange === 'public') return true;
     if (this.visibleRange === 'link') return true;
 
@@ -74,7 +80,7 @@ export class Workspace extends Modifiable {
     return  isMember || isOwner;
   }
 
-  async canEditable(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
+  async canEditable(user: User): Promise<boolean> {
     if (this.editableRange === 'public') return true;
     if (this.editableRange === 'link') return true;
 
@@ -85,8 +91,8 @@ export class Workspace extends Modifiable {
     return isOwner;
   }
 
-  async getAvailableActions(user: z.infer<typeof UserSchema.response>): Promise<WorkspaceAction[]> {
-    const result: WorkspaceAction[] = ['CREATE'];
+  async getAvailableActions(user: User): Promise<WorkspaceActions> {
+    const result: WorkspaceActions = ['CREATE'];
 
     const [
       read,
@@ -107,6 +113,35 @@ export class Workspace extends Modifiable {
     if (deleteAction) result.push('DELETE');
     if (visible) result.push('VISIBLE');
     if (editable) result.push('EDITABLE');
+
+    return result;
+  }
+
+  // utils
+  static override async toResponse<Target extends Workspace | WorkspaceDAO>(
+    workspace: Target,
+    {
+      withMembers = true,
+      withAvailableActions = undefined,
+    }: ToWorkspaceResponseOptions<Target> = {},
+  ): Promise<WorkspaceResponse> {
+    const result: WorkspaceResponse = {
+      id: workspace.id,
+      name: workspace.name,
+      description: workspace.description,
+      image: workspace.image,
+      ...await super.toResponse(workspace),
+    };
+
+    if (withMembers) {
+      const members = await workspace.members;
+      const owner = await workspace.owner;
+      if (members) result.members = members.map((user) => UserDAO.toResponse(user)) ?? [];
+      if (owner) result.owner = UserDAO.toResponse(owner);
+    }
+    if (withAvailableActions) {
+      result.availableActions = await (workspace as WorkspaceDAO).getAvailableActions(withAvailableActions);
+    }
 
     return result;
   }

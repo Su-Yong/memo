@@ -2,8 +2,8 @@ import JWT, { JwtPayload } from 'jsonwebtoken';
 import { z } from 'zod';
 
 import { ControllerHookContext } from './Controller';
-import UserSchema from '../domains/users/models/User.schema';
 import { CommonError } from '../models/Error';
+import { User, UserResponse } from '@suyong/memo-core';
 
 declare module "express" {
   export interface Request  {
@@ -36,5 +36,5 @@ export const useAccessToken = (context: Pick<ControllerHookContext, 'request'>) 
     throw CommonError.INTERNAL_SERVER_ERROR();
   }
 
-  return request.accessToken as z.infer<typeof UserSchema.response>;
+  return request.accessToken as User;
 };

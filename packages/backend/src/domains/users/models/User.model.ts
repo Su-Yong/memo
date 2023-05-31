@@ -1,14 +1,13 @@
-import { Workspace } from '../../workspaces/models/Workspace.model';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
-import UserSchema from './User.schema';
-import { z } from 'zod';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+
 import { registerModel } from '@/models/model';
+import type{ User, UserResponse, Workspace } from '@suyong/memo-core';
 
 export type UserPermission = 'admin' | 'member' | 'guest';
 
 @registerModel
-@Entity()
-export class User implements IUser {
+@Entity({ name: 'user' })
+export class UserDAO implements User {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -31,25 +30,28 @@ export class User implements IUser {
   })
   permission!: UserPermission;
 
-  @ManyToMany(() => Workspace, workspace => workspace.members)
-  workspaces!: Promise<Workspace[]>;
+  @ManyToMany('WorkspaceDAO', (workspace: Workspace) => workspace.members)
+  workspaces!: Promise<Workspace[]> | Workspace[];
 
+  // permissions
   // TODO: Implement this
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async canRead(user: z.infer<typeof UserSchema.response>) {
+  async canRead(user: User) {
     return true;
   }
 
-  async canUpdate(user: z.infer<typeof UserSchema.response>) {
+  async canUpdate(user: User) {
     return user.id === this.id || user.permission === 'admin';
   }
-}
 
-export interface IUser {
-  id: number;
-  email: string;
-  password: string;
-  name: string;
-  profile?: string;
-  permission: UserPermission;
+  // utils
+  static toResponse(user: User): UserResponse {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      profile: user.profile,
+      permission: user.permission,
+    };
+  }
 }

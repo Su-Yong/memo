@@ -1,17 +1,17 @@
 import { useAccessToken } from '../../../controllers/useAccessToken';
 import { createController } from '../../../controllers/Controller';
-import { Memo } from '../models/Memo.model';
-import MemoSchema from '../models/Memo.schema';
 import { CommonError } from '../../../models/Error';
-import { User } from '../../users/models/User.model';
+import { MemoDAO } from '../models/Memo.model';
+import { UserDAO } from '@/domains/users/models/User.model';
+import { MemoSchema } from '@suyong/memo-core';
 
 export const updateMemo = createController(async ({ context, useRequestBody, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
   const body = useRequestBody(MemoSchema.update);
   const params = useParams();
 
-  const userRepository = useRepository(User);
-  const memoRepository = useRepository(Memo, 'tree');
+  const userRepository = useRepository(UserDAO);
+  const memoRepository = useRepository(MemoDAO, 'tree');
 
   const user = await userRepository.findOneBy({ id: token.id });
   if (!user) throw CommonError.USER_NOT_FOUND();
@@ -29,7 +29,7 @@ export const updateMemo = createController(async ({ context, useRequestBody, use
 
   useResponse(
     200,
-    await MemoSchema.toResponse(result, {
+    await MemoDAO.toResponse(result, {
       withWorkspace: false,
       withAvailableActions: user,
     }),

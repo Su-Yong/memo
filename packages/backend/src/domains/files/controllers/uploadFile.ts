@@ -1,13 +1,13 @@
 import { createController } from '../../../controllers/Controller';
 import multer from 'multer';
 import { useAccessToken } from '../../../controllers/useAccessToken';
-import { FileMetadata } from '../models/FileMetadata.model';
 import { v4 } from 'uuid';
 import md5 from 'md5';
 import fs from 'node:fs/promises';
-import { User } from '../../users/models/User.model';
-import FileMetadataSchema from '../models/FileMetadata.schema';
 import { CommonError } from '../../../models/Error';
+import { UserDAO } from '@/domains/users/models/User.model';
+import { FileMetadataSchema } from '@suyong/memo-core';
+import { FileMetadataDAO } from '../models/FileMetadata.model';
 
 const storage = multer.diskStorage({
   destination(req, _, callback) {
@@ -29,7 +29,7 @@ const upload = multer({
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const token = useAccessToken({ request });
 
-      const userRepository = request.db.getRepository(User);
+      const userRepository = request.db.getRepository(UserDAO);
 
       const user = await userRepository.findOneBy({ id: token.id });
       if (!user) throw CommonError.USER_NOT_FOUND();
@@ -48,8 +48,8 @@ export const uploadFile = [
     const request = useRequest();
     const body = useRequestBody(FileMetadataSchema.create);
     const token = useAccessToken(context);
-    const userRepository = useRepository(User);
-    const fileMetadataRepository = useRepository(FileMetadata);
+    const userRepository = useRepository(UserDAO);
+    const fileMetadataRepository = useRepository(FileMetadataDAO);
 
     const user = await userRepository.findOneBy({ id: token.id });
     if (!user) throw CommonError.USER_NOT_FOUND();
@@ -66,11 +66,11 @@ export const uploadFile = [
     if (alreadyExistFile) {
       await fs.unlink(request.file.path);
 
-      useResponse(200, await FileMetadataSchema.toResponse(alreadyExistFile));
+      useResponse(200, await FileMetadataDAO.toResponse(alreadyExistFile));
       return;
     }
 
-    const fileMetadata = new FileMetadata();
+    const fileMetadata = new FileMetadataDAO();
     fileMetadata.id = request.file.filename;
     fileMetadata.fileName = body.fileName ?? request.file.originalname;
     fileMetadata.md5 = hash;
@@ -79,6 +79,6 @@ export const uploadFile = [
 
     const result = await fileMetadataRepository.save(fileMetadata);
 
-    useResponse(200, await FileMetadataSchema.toResponse(result));
+    useResponse(200, await FileMetadataDAO.toResponse(result));
   }),
 ];

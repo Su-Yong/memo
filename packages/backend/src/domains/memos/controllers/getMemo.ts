@@ -1,10 +1,9 @@
 import { useAccessToken } from '../../../controllers/useAccessToken';
 import { createController } from '../../../controllers/Controller';
-import { Memo } from '../models/Memo.model';
 import { CommonError } from '../../../models/Error';
-import MemoSchema from '../models/Memo.schema';
-import { Workspace } from '../../workspaces/models/Workspace.model';
 import { IsNull } from 'typeorm';
+import { MemoDAO } from '../models/Memo.model';
+import { WorkspaceDAO } from '@/domains/workspaces/models/Workspace.model';
 
 export const getMemo = createController(async ({ context, useRepository, useResponse, useParams, useQuery }) => {
   const token = useAccessToken(context);
@@ -12,7 +11,7 @@ export const getMemo = createController(async ({ context, useRepository, useResp
   const query = useQuery();
   const responseAs = query.as || 'tree';
 
-  const repository = useRepository(Memo, 'tree');
+  const repository = useRepository(MemoDAO, 'tree');
 
   const memo = await repository.findOne({
     where: { id: params.id },
@@ -26,12 +25,12 @@ export const getMemo = createController(async ({ context, useRepository, useResp
 
     useResponse(
       200,
-      await MemoSchema.toTreeResponse(tree, { withWorkspace: true, withAvailableActions: token }),
+      await MemoDAO.toTreeResponse(tree, { withWorkspace: true, withAvailableActions: token }),
     );
   } else {
     useResponse(
       200,
-      await MemoSchema.toResponse(memo, { withWorkspace: true, withAvailableActions: token }),
+      await MemoDAO.toResponse(memo, { withWorkspace: true, withAvailableActions: token }),
     );
   }
 });
@@ -42,8 +41,8 @@ export const getMemos = createController(async ({ context, useRepository, useRes
   const query = useQuery();
   const responseAs = query.as || 'default';
 
-  const memoRepository = useRepository(Memo, 'tree');
-  const workspaceRepository = useRepository(Workspace);
+  const memoRepository = useRepository(MemoDAO, 'tree');
+  const workspaceRepository = useRepository(WorkspaceDAO);
 
   const workspace = await workspaceRepository.findOne({
     where: { id: Number(params.workspaceId) },
@@ -66,12 +65,12 @@ export const getMemos = createController(async ({ context, useRepository, useRes
 
     useResponse(
       200,
-      await Promise.all(trees.map((tree) => MemoSchema.toTreeResponse(tree, { withWorkspace: true, withAvailableActions: token }))),
+      await Promise.all(trees.map((tree) => MemoDAO.toTreeResponse(tree, { withWorkspace: true, withAvailableActions: token }))),
     );
   } else {
     useResponse(
       200,
-      await Promise.all(memos.map((memo) => MemoSchema.toResponse(memo, { withWorkspace: true, withAvailableActions: token }))),
+      await Promise.all(memos.map((memo) => MemoDAO.toResponse(memo, { withWorkspace: true, withAvailableActions: token }))),
     );
   }
 });

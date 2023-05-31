@@ -1,12 +1,12 @@
 import createHttpError from 'http-errors';
 import { createController } from '../../../controllers/Controller';
 import { useAccessToken } from '../../../controllers/useAccessToken';
-import { Workspace } from '../models/Workspace.model';
 import { CommonError } from '../../../models/Error';
+import { WorkspaceDAO } from '../models/Workspace.model';
 
 export const deleteWorkspace = createController(async ({ context, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
-  const workspaceRepository = useRepository(Workspace);
+  const workspaceRepository = useRepository(WorkspaceDAO);
   const params = useParams();
 
   const workspaceId = Number(params.id);

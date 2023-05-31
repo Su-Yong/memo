@@ -1,15 +1,15 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { createController } from '../../../controllers/Controller';
-import { FileMetadata } from '../models/FileMetadata.model';
 import { useAccessToken } from '../../../controllers/useAccessToken';
-import { User } from '../../users/models/User.model';
 import { CommonError } from '../../../models/Error';
+import { UserDAO } from '@/domains/users/models/User.model';
+import { FileMetadataDAO } from '../models/FileMetadata.model';
 
 export const deleteFile = createController(async ({ context, useConfig, useRepository, useResponse, useParams }) => {
   const token = useAccessToken(context);
-  const fileMetadataRepository = useRepository(FileMetadata);
-  const userRepository = useRepository(User);
+  const fileMetadataRepository = useRepository(FileMetadataDAO);
+  const userRepository = useRepository(UserDAO);
   const params = useParams();
   const config = useConfig();
 

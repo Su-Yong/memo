@@ -134,9 +134,7 @@ class Application {
         // Output some information
         self.logger?.d(`"${data}" has disconnected.`);
       },
-      onAuthenticate: getAuthEvent({
-        config: this.config,
-      }),
+      onAuthenticate: getAuthEvent({ config: this.config }),
       extensions: [
         new EditorLogger({
           log: (message: string) => this.logger?.i('[editor]', message),

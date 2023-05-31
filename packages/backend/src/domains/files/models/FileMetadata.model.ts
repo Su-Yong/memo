@@ -1,12 +1,12 @@
-import UserSchema from '@/domains/users/models/User.schema';
-import { Creatable } from '../../../models/Common';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { z } from 'zod';
 import { registerModel } from '@/models/model';
+import { CreatableDAO } from '@/models/Common';
+import { FileMetadata, FileMetadataResponse, UserSchema } from '@suyong/memo-core';
 
 @registerModel
-@Entity()
-export class FileMetadata extends Creatable {
+@Entity({ name: 'file_metadata' })
+export class FileMetadataDAO extends CreatableDAO {
   @PrimaryColumn('uuid')
   id!: string;
 
@@ -24,4 +24,14 @@ export class FileMetadata extends Creatable {
   }
 
   canDelete = this.canUpdate;
+
+  static override async toResponse(fileMetadata: FileMetadata): Promise<FileMetadataResponse> {
+    return {
+      id: fileMetadata.id,
+      fileName: fileMetadata.fileName,
+      mimeType: fileMetadata.mimeType,
+      md5: fileMetadata.md5,
+      ...await super.toResponse(fileMetadata),
+    };
+  }
 }

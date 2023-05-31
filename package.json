@@ -20,6 +20,10 @@
   },
   "workspaces": [
     "packages/frontend",
-    "packages/backend"
-  ]
+    "packages/backend",
+    "packages/core"
+  ],
+  "dependencies": {
+    "@suyong/memo-core": "^1.0.0"
+  }
 }

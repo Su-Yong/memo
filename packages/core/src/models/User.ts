@@ -1,7 +1,11 @@
-import z from 'zod';
-import { IUser } from './User.model';
+import { z } from 'zod';
 
-class UserSchema {
+export type UserRequest = z.infer<typeof UserSchema.create>;
+export type UserUpdate = z.infer<typeof UserSchema.update>;
+export type UserLogin = z.infer<typeof UserSchema.update>;
+export type UserResponse = z.infer<typeof UserSchema.response>;
+
+export class UserSchema {
   static create = z.object({
     email: z.string().email(),
     password: z.string().min(8),
@@ -28,16 +32,4 @@ class UserSchema {
     profile: z.string().optional(),
     permission: z.enum(['admin', 'member', 'guest']),
   });
-
-  static toResponse(user: IUser): z.infer<typeof this.response> {
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      profile: user.profile,
-      permission: user.permission,
-    };
-  }
 }
-
-export default UserSchema;
