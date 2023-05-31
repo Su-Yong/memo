@@ -1,9 +1,7 @@
 import { z } from 'zod';
 import { AvailableActions, ModifiableSchema } from './Common';
 import { WorkspaceSchema } from './Workspace';
-
-export type MemoActions = AvailableActions | 'VISIBLE' | 'EDITABLE';
-export const MemoActionsSchema = z.enum(['CREATE', 'READ', 'UPDATE', 'DELETE', 'VISIBLE', 'EDITABLE']).array();
+import { AvailableActionsSchema } from './Common';
 
 export type MemoRequest = z.infer<typeof MemoSchema.create>;
 export type MemoUpdate = z.infer<typeof MemoSchema.update>;
@@ -37,7 +35,7 @@ export class MemoSchema extends ModifiableSchema {
     content: z.string().optional(),
     image: z.string().optional(),
     workspace: WorkspaceSchema.response.optional(),
-    availableActions: MemoActionsSchema.optional(),
+    availableActions: AvailableActionsSchema.optional(),
   });
 
   static treeResponse: z.ZodType<MemoTreeResponse> = MemoSchema.response.extend({
