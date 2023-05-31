@@ -1,24 +1,24 @@
-import { User } from '../models/User';
+import { UserRequest, UserResponse, UserUpdate } from '@suyong/memo-core';
 import axios from './config';
 
 export const loginUser = async (email: string, password: string): Promise<{
   accessToken: string;
-  user: User;
+  user: UserRequest;
 }> => {
   const response = await axios.post('/users/login', { email, password });
 
   return response.data;
 };
 
-export const fetchUser = async (email = ''): Promise<User> => {
+export const fetchUser = async (email = ''): Promise<UserResponse> => {
   const response = await axios.get(`/users/${email}`);
 
   return response.data;
 };
 
 interface UpdateUser {
-  (user: Partial<User>): Promise<User>;
-  (email: string, user: Partial<User>): Promise<User>;
+  (user: UserUpdate): Promise<UserResponse>;
+  (email: string, user: UserUpdate): Promise<UserResponse>;
 }
 export const updateUser = (async (param1, param2) => {
   if (typeof param1 === 'string') {

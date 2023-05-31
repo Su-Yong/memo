@@ -1,9 +1,9 @@
-import { Workspace } from '../models/Workspace';
+import { WorkspaceResponse } from '@suyong/memo-core';
 import axios from './config';
 
 export interface FetchWorkspace {
-  (id?: 'my'): Promise<Workspace[]>;
-  (id: number): Promise<Workspace>;
+  (id?: 'my'): Promise<WorkspaceResponse[]>;
+  (id: number): Promise<WorkspaceResponse>;
 }
 export const fetchWorkspace: FetchWorkspace = async (params = 'my') => {
   const response = await axios.get(`/workspaces/${params}`);

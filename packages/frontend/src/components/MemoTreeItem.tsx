@@ -1,6 +1,6 @@
-import { Memo } from '../models/Memo';
 import React, { useCallback } from 'react';
 import { cx } from '../utils/className';
+import { MemoTreeResponse as Memo } from '@suyong/memo-core';
 
 export interface MemoTreeItemProps {
   memo: Memo;

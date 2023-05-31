@@ -1,11 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Workspace } from '../models/Workspace';
 import { createMemo, fetchMemoByWorkspace } from '../api/memo';
 import MemoTree from './MemoTree';
 import { useCallback } from 'react';
-import { Memo } from '../models/Memo';
 import { useAtom } from 'jotai';
 import { SELECTED_MEMO_ID } from '../store/memo';
+import { WorkspaceResponse as Workspace, MemoResponse as Memo } from '@suyong/memo-core';
 
 export interface MemoListProps {
   workspace: Workspace;

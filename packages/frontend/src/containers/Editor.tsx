@@ -3,18 +3,19 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { ACCESS_TOKEN, CLIENT_USER } from '../store/auth';
 import { getRandomColor } from '../utils/colors';
 import React from 'react';
 import { MEMO_PROVIDER_MAP } from '../store/memo';
+import Spinner from '../components/common/Spinner';
 
 export interface EditorProps {
   id: string;
 }
 const Editor = ({ id }: EditorProps) => {
-  const newProviderFlag = useRef(false);
+  const isNewProvider = useRef(false);
 
   const token = useAtomValue(ACCESS_TOKEN);
   const clientUser = useAtomValue(CLIENT_USER);
@@ -24,13 +25,15 @@ const Editor = ({ id }: EditorProps) => {
     let result = memoProviders.get(id);
     if (result) return result;
 
-    newProviderFlag.current = true;
+    isNewProvider.current = true;
     return new HocuspocusProvider({
       url: `wss://local.suyong.me/ws/memos/${id}`,
       token,
       name: id,
     });
   }, [memoProviders, id, token]);
+
+  const [isLoading, setLoading] = useState(isNewProvider.current);
 
   const editor = useEditor({
     extensions: [
@@ -83,18 +86,36 @@ const Editor = ({ id }: EditorProps) => {
   });
 
   useEffect(() => {
-    if (!newProviderFlag.current) return;
+    if (!isNewProvider.current) return;
     if (memoProviders.has(id)) return;
 
     const newMap = new Map<string, HocuspocusProvider>(memoProviders);
     newMap.set(id, provider);
 
     setMemoProviders(newMap);
-    newProviderFlag.current = false;
+    isNewProvider.current = false;
   }, [id, token, memoProviders, provider]);
 
+  useEffect(() => {
+    const provider = memoProviders.get(id);
+    const onEndLoad = () => setLoading(false);
+
+    provider?.on('sync', onEndLoad);
+
+    return () => {
+      provider?.off('sync', onEndLoad);
+    }
+  }, [memoProviders, id]);
+
   return (
-    <EditorContent editor={editor} className={'w-full h-full px-4 py-2 overflow-auto'} />
+    <div className={'w-full h-full relative'}>
+      {(isNewProvider.current || isLoading) && (
+      <div className={'absolute inset-0 flex justify-center items-center pointer-events-none'}>
+        <Spinner className={'w-8 h-8 stroke-primary-500'} />
+      </div>
+      )}
+      <EditorContent editor={editor} className={'w-full h-full px-4 py-2 overflow-auto'} />
+    </div>
   );
 };
 

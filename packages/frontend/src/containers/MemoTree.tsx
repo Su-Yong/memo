@@ -1,9 +1,9 @@
 import { TAB_MEMO_ID_LIST, TREE_OPEN_MEMO_ID_LIST } from '../store/memo';
 import MemoTreeItem from '../components/MemoTreeItem';
-import { Memo } from '../models/Memo';
 import { useAtom, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 import { Transition } from '@headlessui/react';
+import { MemoTreeResponse as Memo } from '@suyong/memo-core';
 
 export interface MemoTreeProps {
   memo: Memo;

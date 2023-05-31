@@ -5,7 +5,6 @@ import Editor from '../containers/Editor';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchWorkspace } from '../api/workspace';
 import { useCallback, useState } from 'react';
-import { Workspace } from '../models/Workspace';
 import { uploadFile } from '../api/file';
 import { useAtom, useAtomValue } from 'jotai';
 import { CLIENT_USER } from '../store/auth';
@@ -15,6 +14,7 @@ import MemoList from '../containers/MemoList';
 import Spinner from '../components/common/Spinner';
 import { SELECTED_MEMO_ID } from '../store/memo';
 import { THEME_MODE } from '../store/preference';
+import { WorkspaceResponse as Workspace } from '@suyong/memo-core';
 
 const MemoPage = () => {
   const [themeMode, setThemeMode] = useAtom(THEME_MODE);
