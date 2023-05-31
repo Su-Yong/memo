@@ -108,13 +108,13 @@ const Editor = ({ id }: EditorProps) => {
   }, [memoProviders, id]);
 
   return (
-    <div className={'w-full h-full relative'}>
+    <div className={'w-full h-full relative overflow-auto'}>
       {(isNewProvider.current || isLoading) && (
       <div className={'absolute inset-0 flex justify-center items-center pointer-events-none'}>
         <Spinner className={'w-8 h-8 stroke-primary-500'} />
       </div>
       )}
-      <EditorContent editor={editor} className={'w-full h-full px-4 py-2 overflow-auto'} />
+      <EditorContent editor={editor} className={'w-full h-full px-4 py-2'} />
     </div>
   );
 };
