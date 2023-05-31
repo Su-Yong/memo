@@ -1,18 +1,21 @@
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, Tree, TreeChildren, TreeParent } from 'typeorm';
-import { z } from 'zod';
 import { registerModel } from '@/models/model';
 import { ModifiableDAO } from '@/models/Common';
-import { MemoResponse, WorkspaceSchema, fromLazy } from '@suyong/memo-core';
+import { AvailableActions, MemoResponse, Unlazy, WorkspaceSchema, extensions, fromLazy } from '@suyong/memo-core';
 import type { Memo, User, UserSchema, Workspace, MemoTreeResponse } from '@suyong/memo-core';
 import { ToWorkspaceResponseOptions, WorkspaceDAO } from '@/domains/workspaces/models/Workspace.model';
 import { TiptapTransformer } from '@hocuspocus/transformer';
 import { generateHTML } from '@tiptap/html';
 import * as Y from 'yjs';
 
-export interface ToMemoResponseOptions {
-  withWorkspace?: boolean | ToWorkspaceResponseOptions<any>;
-  withAvailableActions?: User;
-}
+export type ToMemoResponseOptions<Target extends Memo> = {
+  withWorkspace?: boolean | ToWorkspaceResponseOptions<Unlazy<Target['workspace']>>;
+} & (
+  Target extends MemoDAO
+    ? { withAvailableActions?: User }
+    : { withAvailableActions?: undefined }
+);
+
 @registerModel
 @Entity({ name: 'memo' })
 @Tree('closure-table', { closureTableName: 'memo_closure' })
@@ -66,7 +69,10 @@ export class MemoDAO extends ModifiableDAO implements Memo {
   @TreeParent()
   parent!: Memo;
 
-  async canRead(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
+  async canRead(user: User): Promise<boolean> {
+    if (this.visibleRange === 'public') return true;
+    if (this.visibleRange === 'link') return true;
+
     const [
       isMember,
       isOwner
@@ -78,80 +84,70 @@ export class MemoDAO extends ModifiableDAO implements Memo {
     return isMember || isOwner;
   }
 
-  canUpdate = this.canRead;
+  async canUpdate(user: User): Promise<boolean> {
+    if (this.visibleRange === 'public') return true;
+    if (this.visibleRange === 'link') return true;
 
-  // async canUpdate(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
-  //   const isOwner = (await this.owner)?.id === user.id;
+    const [
+      isMember,
+      isOwner
+    ] = await Promise.all([
+      !!(await (await this.workspace)?.members)?.find((member) => member.id === user.id),
+      (await (await this.workspace)?.owner)?.id === user.id,
+    ]);
 
-  //   return isOwner || user.permission === 'admin';
-  // }
+    if (this.visibleRange === 'member') return isMember;
+    if (this.visibleRange === 'owner') return isOwner;
 
-  // canDelete = this.canUpdate;
+    return isMember || isOwner;
+  }
 
-  // async canVisible(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
-  //   if (this.visibleRange === 'public') return true;
-  //   if (this.visibleRange === 'link') return true;
+  canDelete = this.canRead;
 
-  //   const isMember = !!(await this.members)?.find((member) => member.id === user.id);
-  //   const isOwner = (await this.owner)?.id === user.id;
+  async getAvailableActions(user: User): Promise<AvailableActions> {
+    const result: AvailableActions = ['CREATE'];
 
-  //   return  isMember || isOwner;
-  // }
+    const [
+      read,
+      update,
+      deleteAction,
+    ] = await Promise.all([
+      this.canRead(user),
+      this.canUpdate(user),
+      this.canDelete(user),
+    ]);
 
-  // async canEditable(user: z.infer<typeof UserSchema.response>): Promise<boolean> {
-  //   if (this.editableRange === 'public') return true;
-  //   if (this.editableRange === 'link') return true;
+    if (read) result.push('READ');
+    if (update) result.push('UPDATE');
+    if (deleteAction) result.push('DELETE');
 
-  //   const isMember = !!(await this.members)?.find((member) => member.id === user.id);
-  //   const isOwner = (await this.owner)?.id === user.id;
+    return result;
+  }
 
-  //   if (this.editableRange === 'member') return isMember || isOwner;
-  //   return isOwner;
-  // }
-
-  // async getAvailableActions(user: z.infer<typeof UserSchema.response>): Promise<WorkspaceAction[]> {
-  //   const result: WorkspaceAction[] = ['CREATE'];
-
-  //   const [
-  //     read,
-  //     update,
-  //     deleteAction,
-  //     visible,
-  //     editable,
-  //   ] = await Promise.all([
-  //     this.canRead(user),
-  //     this.canUpdate(user),
-  //     this.canDelete(user),
-  //     this.canVisible(user),
-  //     this.canEditable(user),
-  //   ]);
-
-  //   if (read) result.push('READ');
-  //   if (update) result.push('UPDATE');
-  //   if (deleteAction) result.push('DELETE');
-  //   if (visible) result.push('VISIBLE');
-  //   if (editable) result.push('EDITABLE');
-
-  //   return result;
-  // }
-
-
-  static override async toResponse(
-    memo: Memo,
+  static override async toResponse<Target extends Memo>(
+    memo: Target,
     {
       withWorkspace = false,
       withAvailableActions = undefined,
-    }: ToMemoResponseOptions = {},
+    }: ToMemoResponseOptions<Target> = {},
   ): Promise<MemoResponse> {
-    const doc = new Y.Doc();
+    let content = '';
 
-    if (memo.content) Y.applyUpdate(doc, memo.content);
-    const json = TiptapTransformer.fromYdoc(doc);
+    try {
+      const doc = new Y.Doc();
+
+      if (memo.content) {
+        Y.applyUpdate(doc, memo.content);
+        const json = TiptapTransformer.fromYdoc(doc);
+
+        content = generateHTML(json.default, extensions);
+      }
+    } catch {}
 
     const result: MemoResponse = {
       id: memo.id,
       name: memo.name,
-      // content: generateHTML(doc),
+      content,
       image: memo.image,
       ...await super.toResponse(memo),
     };
@@ -162,17 +158,17 @@ export class MemoDAO extends ModifiableDAO implements Memo {
 
       result.workspace = await WorkspaceDAO.toResponse(await memo.workspace, options);
     }
-    // if (withAvailableActions) result.availableActions = await memo.getAvailableActions(withAvailableActions);
+    if (withAvailableActions) result.availableActions = await ((await memo) as unknown as MemoDAO).getAvailableActions(withAvailableActions);
 
     return result;
   }
 
-  static async toTreeResponse(
-    memo: Memo,
+  static async toTreeResponse<Target extends Memo>(
+    memo: Target,
     {
       withWorkspace = false,
       withAvailableActions = undefined,
-    }: ToMemoResponseOptions = {},
+    }: ToMemoResponseOptions<Target> = {},
   ): Promise<MemoTreeResponse> {
     const result: MemoTreeResponse = await this.toResponse(memo, { withWorkspace, withAvailableActions });
 
