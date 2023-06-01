@@ -1,26 +1,35 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAtomValue } from 'jotai';
 import { fetchMemo, updateMemo } from '../api/memo';
 import MemoTab from '../containers/MemoTab';
-import { SELECTED_MEMO_ID } from '../store/memo';
 import { useCallback, useEffect, useRef } from 'react';
+import { useHocuspocusProvider } from '../hooks/useHocuspocusProvider';
+import { useAttachedUsers } from '../hooks/useAttachedUsers';
+import Profile from './user/Profile';
+import { useInactiveUsers } from '../hooks/useInactiveUsers';
+import { cx } from '../utils/className';
+import Color from 'color';
 
-const MemoHeader = () => {
+export interface MemoHeaderProps {
+  id: string;
+}
+const MemoHeader = ({ id }: MemoHeaderProps) => {
   const queryClient = useQueryClient();
 
-  const selectedMemoId = useAtomValue(SELECTED_MEMO_ID);
-
   const titleRef = useRef<HTMLInputElement>(null);
+  const [provider] = useHocuspocusProvider(id);
+
+  const attachedUsers = useAttachedUsers(provider);
+  const inactiveUsers = useInactiveUsers(provider);
 
   const { data: memo } = useQuery(
-    ['memo', selectedMemoId],
-    async () => typeof selectedMemoId === 'string' ? fetchMemo(selectedMemoId) : null,
+    ['memo', id],
+    async () => typeof id === 'string' ? fetchMemo(id) : null,
   );
   const titleMutation = useMutation(async (title: string) => {
-    if (typeof selectedMemoId !== 'string') return;
+    if (typeof id !== 'string') return;
 
-    await updateMemo(selectedMemoId, { name: title });
-    await queryClient.invalidateQueries(['memo', selectedMemoId]);
+    await updateMemo(id, { name: title });
+    await queryClient.invalidateQueries(['memo', id]);
     await queryClient.invalidateQueries(['memo-list']);
   });
 
@@ -29,6 +38,14 @@ const MemoHeader = () => {
 
     if (currentTitle !== memo?.name) titleMutation.mutate(currentTitle);
   }, [memo?.name]);
+
+  const isDark = useCallback((color: string) => {
+    try {
+      return Color(color.replaceAll('#', '')).isDark();
+    } catch {}
+
+    return false;
+  }, []);
 
   useEffect(() => {
     if (!titleRef.current) return;
@@ -48,15 +65,35 @@ const MemoHeader = () => {
       <div className={'w-full flex justify-start items-center gap-2 px-4'}>
         <input
           ref={titleRef}
-          className={'w-full font-bold text-2xl outline-none bg-transparent text-gray-900 dark:text-gray-100'}
+          className={'flex-1 font-bold text-2xl outline-none bg-transparent text-gray-900 dark:text-gray-100'}
           onBlur={onBlurTitle}
         />
-        <div className={'flex-1'}></div>
-        <button className={'btn-text btn-icon flex text-md'}>
-          <i className={'material-symbols-outlined icon'}>
-            close
-          </i>
-        </button>
+        {attachedUsers.map((user) => (
+          <div
+            key={user.id}
+            className={'w-fit flex justify-start items-center gap-1 rounded-full px-1 py-0 ring-2'}
+            style={
+              inactiveUsers.some((it) => it.id === user.id)
+                ? { '--tw-ring-color': user.color }
+                : { '--tw-ring-color': user.color, backgroundColor: user.color }
+            }
+          >
+            <Profile profile={user.profile} className={'w-4 h-4'} />
+            <span
+              className={cx(
+                'w-fit font-bold shrink-0',
+                isDark(user.color) ? 'text-white' : 'text-black'
+              )}
+              style={
+                inactiveUsers.some((it) => it.id === user.id)
+                  ? { color: user.color }
+                  : {}
+              }
+            >
+              {user.name}
+            </span>
+          </div>
+        ))}
       </div>
     </header>
   )

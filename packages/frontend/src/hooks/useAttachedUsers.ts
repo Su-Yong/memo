@@ -13,7 +13,7 @@ export const useAttachedUsers = (provider?: HocuspocusProvider): CollaborativeUs
       const states = provider.awareness.getStates();
 
       const newInactiveUsers = Array.from(states.values())
-        .filter((it) => it.user && !it.detached)
+        .filter((it) => it.user && it.attached)
         .map((it) => it.user);
 
       if (lastAttachedUsers.current.length !== newInactiveUsers.length) {

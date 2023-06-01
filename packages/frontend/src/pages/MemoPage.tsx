@@ -130,7 +130,7 @@ const MemoPage = () => {
           <section className={'w-full h-full flex flex-col justify-start items-stretch'}>
             {typeof selectedId === 'string' && (
               <>
-                <MemoHeader />
+                <MemoHeader id={selectedId} />
                 <Editor key={selectedId} id={selectedId} />
               </>
             )}

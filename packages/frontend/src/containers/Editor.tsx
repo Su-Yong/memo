@@ -1,38 +1,35 @@
 import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
-import { CLIENT_USER } from '../store/auth';
-import { getRandomColor } from '../utils/colors';
+import { CLIENT_COLOR, CLIENT_USER } from '../store/auth';
 import React, { useEffect } from 'react';
 import Spinner from '../components/common/Spinner';
 import { cx } from '../utils/className';
-import { useInactiveUsers } from '../hooks/useInactiveUsers';
 import { useHocuspocusProvider } from '../hooks/useHocuspocusProvider';
 import { useAtomValue } from 'jotai';
+import { extensions } from '@suyong/memo-core';
 
 export interface EditorProps {
   id: string;
 }
 const Editor = ({ id }: EditorProps) => {
   const clientUser = useAtomValue(CLIENT_USER);
+  const [primaryColor] = useAtomValue(CLIENT_COLOR);
 
   const [provider, isLoading] = useHocuspocusProvider(id);
-  const inactiveUsers = useInactiveUsers(provider);
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        history: false,
-      }),
+      ...extensions,
       Collaboration.configure({
         document: provider.document,
       }),
       CollaborationCursor.configure({
         provider: provider,
         user: {
+          id: clientUser?.id,
           name: clientUser?.name,
-          color: getRandomColor(),
+          color: primaryColor,
           profile: clientUser?.profile,
         },
         render: (user) => {
@@ -72,10 +69,10 @@ const Editor = ({ id }: EditorProps) => {
 
   useEffect(() => {
     if (!provider) return;
-    provider.setAwarenessField('detached', false);
+    provider.setAwarenessField('attached', true);
 
     return () => {
-      provider.setAwarenessField('detached', true);
+      provider.setAwarenessField('attached', false);
     };
   }, [provider]);
 
@@ -88,19 +85,6 @@ const Editor = ({ id }: EditorProps) => {
       {isLoading && (
         <div className={'absolute inset-0 flex justify-center items-center pointer-events-none'}>
           <Spinner className={'w-8 h-8 stroke-primary-500'} />
-        </div>
-      )}
-      {inactiveUsers.length > 0 && (
-        <div className={'fixed bottom-2 right-2 flex justify-center items-center gap-2 pointer-events-none'}>
-          {inactiveUsers.map((user) => (
-            <div
-              className={'px-2 py-1 rounded flex justify-start items-center gap-1'}
-              style={{ backgroundColor: user.color }}
-            >
-              {user.profile && <img src={user.profile} className={'w-4 h-4 object-fit rounded-full'} />}
-              {user.name}
-            </div>
-          ))}
         </div>
       )}
       <EditorContent editor={editor} className={'w-full h-full px-4 py-2'} />
