@@ -1,5 +1,5 @@
 export interface CollaborativeUser {
-  id: string;
+  id: number;
   name: string;
   color: string;
   profile?: string;

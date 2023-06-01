@@ -14,7 +14,7 @@ export interface EditorProps {
 }
 const Editor = ({ id }: EditorProps) => {
   const clientUser = useAtomValue(CLIENT_USER);
-  const [primaryColor] = useAtomValue(CLIENT_COLOR);
+  const colorData = useAtomValue(CLIENT_COLOR);
 
   const [provider, isLoading] = useHocuspocusProvider(id);
 
@@ -29,7 +29,7 @@ const Editor = ({ id }: EditorProps) => {
         user: {
           id: clientUser?.id,
           name: clientUser?.name,
-          color: primaryColor,
+          color: colorData?.[0],
           profile: clientUser?.profile,
         },
         render: (user) => {

@@ -27,3 +27,7 @@ export const createMemo = async (memo: MemoRequest): Promise<MemoResponse> => {
 
   return response.data;
 };
+
+export const deleteMemo = async (memoId: string): Promise<void> => {
+  await axios.delete(`/memos/${memoId}`);
+};

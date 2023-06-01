@@ -1,6 +1,18 @@
 import React, { useCallback } from 'react';
 import { cx } from '../utils/className';
 import { MemoTreeResponse as Memo } from '@suyong/memo-core';
+import DropDown, { DropDownItem } from './common/DropDown';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteMemo } from '../api/memo';
+
+const TREE_MENU_LIST = [
+  {
+    id: 'delete',
+    name: '삭제',
+    icon: 'delete',
+    color: 'red',
+  },
+];
 
 export interface MemoTreeItemProps {
   memo: Memo;
@@ -18,6 +30,14 @@ const MemoTreeItem = ({
   onClick,
   onCollapse,
 }: MemoTreeItemProps) => {
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation(async (id: string) => {
+    await deleteMemo(id);
+
+    await queryClient.invalidateQueries(['memo-list']);
+  });
+
   const onBaseClick = useCallback((event: React.MouseEvent<HTMLLIElement>) => {
     if (selectedId === memo.id) {
       onCollapse?.(memo);
@@ -30,6 +50,10 @@ const MemoTreeItem = ({
     if (isIconClicked) onCollapse?.(memo);
     else onClick?.(memo);
   }, [memo, onClick, onCollapse, selectedId]);
+
+  const onMenuClick = useCallback((item: DropDownItem) => {
+    if (item.id === 'delete') deleteMutation.mutate(memo.id);
+  }, []);
 
   return (
     <li
@@ -62,11 +86,13 @@ const MemoTreeItem = ({
       <div className={'text-base truncate flex-1'}>
         {memo.name}
       </div>
-      <button className={'btn-text flex p-0 px-1 rounded-md'}>
-        <i className={'material-symbols-outlined icon text-base'}>
-          more_vert
-        </i>
-      </button>
+      <DropDown data={TREE_MENU_LIST} onClick={onMenuClick}>
+        <button className={'btn-text flex p-0 px-1 rounded-md'}>
+          <i className={'material-symbols-outlined icon text-base'}>
+            more_vert
+          </i>
+        </button>
+      </DropDown>
     </li>
   );
 };

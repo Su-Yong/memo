@@ -5,6 +5,9 @@ import Spinner from './common/Spinner';
 import React, { useCallback } from 'react';
 import { useSetAtom } from 'jotai';
 import { SELECTED_MEMO_ID, TAB_MEMO_ID_LIST } from '../store/memo';
+import { useHocuspocusProvider } from '../hooks/useHocuspocusProvider';
+import { useAttachedUsers } from '../hooks/useAttachedUsers';
+import ProfileSet from './user/ProfileSet';
 
 export interface MemoTabItemProps {
   memoId: string;
@@ -18,6 +21,10 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
     ['memo', memoId],
     async () => fetchMemo(memoId),
   );
+
+  const [provider] = useHocuspocusProvider(memoId);
+
+  const attachedUsers = useAttachedUsers(provider);
 
   const onClick = useCallback(() => {
     if (memo) setSelectedMemoId(memo.id);
@@ -42,6 +49,7 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
       )}
       onClick={onClick}
     >
+      <ProfileSet users={attachedUsers} className={'h-4'} />
       <span className={'shrink-1 flex justify-start items-center gap-2'}>
         {memo && memo.name}
         {isLoading && <Spinner className={'w-4 h-4 stroke-gray-300 dark:stroke-700'} />}

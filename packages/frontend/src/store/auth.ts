@@ -1,11 +1,11 @@
 import { atomWithStorage } from 'jotai/utils'
 import { atomsWithQuery } from 'jotai-tanstack-query'
 import { fetchUser } from '../api/user';
-import { atom } from 'jotai';
 import { FastAverageColor } from 'fast-average-color';
 import { getRandomColor } from '../utils/colors';
 import Color from 'color';
 import { atomWithCache } from 'jotai-cache';
+import { loadableWithDefault } from '../utils/loadableWithDefault';
 
 export const ACCESS_TOKEN = atomWithStorage<string>('access-token', '');
 export const [CLIENT_USER] = atomsWithQuery(
@@ -20,7 +20,7 @@ export const [CLIENT_USER] = atomsWithQuery(
 );
 
 const DEFAULT_COLOR = getRandomColor();
-export const CLIENT_COLOR = atomWithCache(async (get) => {
+export const CLIENT_COLOR = loadableWithDefault(atomWithCache(async (get) => {
   let color = DEFAULT_COLOR;
   const client = await get(CLIENT_USER);
 
@@ -35,4 +35,4 @@ export const CLIENT_COLOR = atomWithCache(async (get) => {
 
   const c = Color(color);
   return [color, c.isLight()] as const;
-});
+}));

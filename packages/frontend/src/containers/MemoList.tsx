@@ -32,7 +32,7 @@ const MemoList = ({ workspace }: MemoListProps) => {
   }, []);
 
   return (
-    <div className={'flex flex-col justify-start items-stretch bg-transparent'}>
+    <div className={'w-full h-full flex flex-col justify-start items-stretch bg-transparent'}>
       <div className={'w-full h-22 p-3 flex flex-col justify-start items-start'}>
         <h3 className={'w-full flex justify-between items-center font-bold text-xl text-gray-900 dark:text-gray-100'}>
           {workspace.name}
@@ -47,7 +47,7 @@ const MemoList = ({ workspace }: MemoListProps) => {
         </span>
       </div>
       <div className={'w-full h-[1px] bg-gray-300 dark:bg-gray-700'} />
-      <div className={'w-full p-3 flex flex-col justify-start items-stretch'}>
+      <div className={'w-full flex-1 p-3 flex flex-col justify-start items-stretch overflow-auto'}>
         {memoList?.map((memo) => (
           <MemoTree
             key={memo.id}

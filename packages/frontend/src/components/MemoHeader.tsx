@@ -78,7 +78,7 @@ const MemoHeader = ({ id }: MemoHeaderProps) => {
                 : { '--tw-ring-color': user.color, backgroundColor: user.color }
             }
           >
-            <Profile profile={user.profile} className={'w-4 h-4'} />
+            <Profile user={user} className={'w-4 h-4'} />
             <span
               className={cx(
                 'w-fit font-bold shrink-0',
