@@ -10,6 +10,13 @@ import { getRandomColor } from '../utils/colors';
 import React from 'react';
 import { MEMO_PROVIDER_MAP } from '../store/memo';
 import Spinner from '../components/common/Spinner';
+import { cl, cx } from '../utils/className';
+
+interface CollaborativeUser {
+  name: string;
+  color: string;
+  profile?: string;
+};
 
 export interface EditorProps {
   id: string;
@@ -20,6 +27,9 @@ const Editor = ({ id }: EditorProps) => {
   const token = useAtomValue(ACCESS_TOKEN);
   const clientUser = useAtomValue(CLIENT_USER);
   const [memoProviders, setMemoProviders] = useAtom(MEMO_PROVIDER_MAP);
+
+  const [inactiveUsers, setInactiveUsers] = useState<CollaborativeUser[]>([]);
+  const lastInactiveUser = useRef(inactiveUsers);
 
   const provider = useMemo(() => {
     let result = memoProviders.get(id);
@@ -78,7 +88,7 @@ const Editor = ({ id }: EditorProps) => {
     ],
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert prose-base sm:prose-sm lg:prose-lg focus:outline-none',
+        class: 'min-w-full w-full min-h-full h-full prose dark:prose-invert prose-base sm:prose-sm lg:prose-lg focus:outline-none',
       },
     },
     content: '',
@@ -98,21 +108,52 @@ const Editor = ({ id }: EditorProps) => {
 
   useEffect(() => {
     const provider = memoProviders.get(id);
-    const onEndLoad = () => setLoading(false);
+    if (!provider) return;
 
-    provider?.on('sync', onEndLoad);
+    const onEndLoad = () => setLoading(false);
+    const update = () => {
+      const states = provider.awareness.getStates();
+
+      const newInactiveUsers = Array.from(states.values()).filter((it) => it.user && !it.cursor).map((it) => it.user);
+      if (lastInactiveUser.current.length !== newInactiveUsers.length) {
+        lastInactiveUser.current = newInactiveUsers;
+
+        setInactiveUsers(newInactiveUsers);
+      }
+    };
+
+    provider.on('sync', onEndLoad);
+    provider.on('awarenessUpdate', update);
 
     return () => {
-      provider?.off('sync', onEndLoad);
+      provider.off('sync', onEndLoad);
+      provider.off('awarenessUpdate', update);
     }
   }, [memoProviders, id]);
 
   return (
-    <div className={'w-full h-full relative overflow-auto'}>
+    <div
+      className={cx(
+        'w-full h-full relative overflow-auto',
+      )}
+    >
       {(isNewProvider.current || isLoading) && (
-      <div className={'absolute inset-0 flex justify-center items-center pointer-events-none'}>
-        <Spinner className={'w-8 h-8 stroke-primary-500'} />
-      </div>
+        <div className={'absolute inset-0 flex justify-center items-center pointer-events-none'}>
+          <Spinner className={'w-8 h-8 stroke-primary-500'} />
+        </div>
+      )}
+      {inactiveUsers.length > 0 && (
+        <div className={'fixed bottom-2 right-2 flex justify-center items-center gap-2 pointer-events-none'}>
+          {inactiveUsers.map((user) => (
+            <div
+              className={'px-2 py-1 rounded flex justify-start items-center gap-1'}
+              style={{ backgroundColor: user.color }}
+            >
+              {user.profile && <img src={user.profile} className={'w-4 h-4 object-fit rounded-full'} />}
+              {user.name}
+            </div>
+          ))}
+        </div>
       )}
       <EditorContent editor={editor} className={'w-full h-full px-4 py-2'} />
     </div>
