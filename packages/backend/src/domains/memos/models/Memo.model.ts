@@ -102,7 +102,7 @@ export class MemoDAO extends ModifiableDAO implements Memo {
     return isMember || isOwner;
   }
 
-  canDelete = this.canRead;
+  canDelete = this.canUpdate;
 
   async getAvailableActions(user: User): Promise<AvailableActions> {
     const result: AvailableActions = ['CREATE'];

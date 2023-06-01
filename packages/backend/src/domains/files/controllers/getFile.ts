@@ -18,6 +18,7 @@ export const getFile = createController(async ({ context, useConfig, useParams, 
   const stream = fs.createReadStream(filePath);
   stream.on('open', () => {
     context.response.set('Content-Type', fileMetadata.mimeType);
+    context.response.set('cache-control', 'max-age=31536000');
     stream.pipe(context.response);
   });
   stream.on('error', () => {
