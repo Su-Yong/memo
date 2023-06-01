@@ -1,49 +1,24 @@
-import { HocuspocusProvider } from '@hocuspocus/provider';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
-import { ACCESS_TOKEN, CLIENT_USER } from '../store/auth';
+import { CLIENT_USER } from '../store/auth';
 import { getRandomColor } from '../utils/colors';
-import React from 'react';
-import { MEMO_PROVIDER_MAP } from '../store/memo';
+import React, { useEffect } from 'react';
 import Spinner from '../components/common/Spinner';
-import { cl, cx } from '../utils/className';
-
-interface CollaborativeUser {
-  name: string;
-  color: string;
-  profile?: string;
-};
+import { cx } from '../utils/className';
+import { useInactiveUsers } from '../hooks/useInactiveUsers';
+import { useHocuspocusProvider } from '../hooks/useHocuspocusProvider';
+import { useAtomValue } from 'jotai';
 
 export interface EditorProps {
   id: string;
 }
 const Editor = ({ id }: EditorProps) => {
-  const isNewProvider = useRef(false);
-
-  const token = useAtomValue(ACCESS_TOKEN);
   const clientUser = useAtomValue(CLIENT_USER);
-  const [memoProviders, setMemoProviders] = useAtom(MEMO_PROVIDER_MAP);
 
-  const [inactiveUsers, setInactiveUsers] = useState<CollaborativeUser[]>([]);
-  const lastInactiveUser = useRef(inactiveUsers);
-
-  const provider = useMemo(() => {
-    let result = memoProviders.get(id);
-    if (result) return result;
-
-    isNewProvider.current = true;
-    return new HocuspocusProvider({
-      url: `wss://local.suyong.me/ws/memos/${id}`,
-      token,
-      name: id,
-    });
-  }, [memoProviders, id, token]);
-
-  const [isLoading, setLoading] = useState(isNewProvider.current);
+  const [provider, isLoading] = useHocuspocusProvider(id);
+  const inactiveUsers = useInactiveUsers(provider);
 
   const editor = useEditor({
     extensions: [
@@ -96,40 +71,13 @@ const Editor = ({ id }: EditorProps) => {
   });
 
   useEffect(() => {
-    if (!isNewProvider.current) return;
-    if (memoProviders.has(id)) return;
-
-    const newMap = new Map<string, HocuspocusProvider>(memoProviders);
-    newMap.set(id, provider);
-
-    setMemoProviders(newMap);
-    isNewProvider.current = false;
-  }, [id, token, memoProviders, provider]);
-
-  useEffect(() => {
-    const provider = memoProviders.get(id);
     if (!provider) return;
-
-    const onEndLoad = () => setLoading(false);
-    const update = () => {
-      const states = provider.awareness.getStates();
-
-      const newInactiveUsers = Array.from(states.values()).filter((it) => it.user && !it.cursor).map((it) => it.user);
-      if (lastInactiveUser.current.length !== newInactiveUsers.length) {
-        lastInactiveUser.current = newInactiveUsers;
-
-        setInactiveUsers(newInactiveUsers);
-      }
-    };
-
-    provider.on('sync', onEndLoad);
-    provider.on('awarenessUpdate', update);
+    provider.setAwarenessField('detached', false);
 
     return () => {
-      provider.off('sync', onEndLoad);
-      provider.off('awarenessUpdate', update);
-    }
-  }, [memoProviders, id]);
+      provider.setAwarenessField('detached', true);
+    };
+  }, [provider]);
 
   return (
     <div
@@ -137,7 +85,7 @@ const Editor = ({ id }: EditorProps) => {
         'w-full h-full relative overflow-auto',
       )}
     >
-      {(isNewProvider.current || isLoading) && (
+      {isLoading && (
         <div className={'absolute inset-0 flex justify-center items-center pointer-events-none'}>
           <Spinner className={'w-8 h-8 stroke-primary-500'} />
         </div>
