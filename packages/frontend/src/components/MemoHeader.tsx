@@ -82,7 +82,7 @@ const MemoHeader = ({ id }: MemoHeaderProps) => {
             <span
               className={cx(
                 'w-fit font-bold shrink-0',
-                isDark(user.color) ? 'text-white' : 'text-black'
+                isDark(user.color) ? 'text-white dark:text-white' : 'text-black dark:text-black'
               )}
               style={
                 inactiveUsers.some((it) => it.id === user.id)

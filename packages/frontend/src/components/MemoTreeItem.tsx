@@ -4,6 +4,9 @@ import { MemoTreeResponse as Memo } from '@suyong/memo-core';
 import DropDown, { DropDownItem } from './common/DropDown';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMemo } from '../api/memo';
+import { useHocuspocusProvider } from '../hooks/useHocuspocusProvider';
+import { useAttachedUsers } from '../hooks/useAttachedUsers';
+import ProfileSet from './user/ProfileSet';
 
 const TREE_MENU_LIST = [
   {
@@ -31,6 +34,9 @@ const MemoTreeItem = ({
   onCollapse,
 }: MemoTreeItemProps) => {
   const queryClient = useQueryClient();
+
+  const [provider] = useHocuspocusProvider(memo.id);
+  const attachedUsers = useAttachedUsers(provider);
 
   const deleteMutation = useMutation(async (id: string) => {
     await deleteMemo(id);
@@ -86,6 +92,7 @@ const MemoTreeItem = ({
       <div className={'text-base truncate flex-1'}>
         {memo.name}
       </div>
+      <ProfileSet users={attachedUsers} className={'h-4'} />
       <DropDown data={TREE_MENU_LIST} onClick={onMenuClick}>
         <button className={'btn-text flex p-0 px-1 rounded-md'}>
           <i className={'material-symbols-outlined icon text-base'}>

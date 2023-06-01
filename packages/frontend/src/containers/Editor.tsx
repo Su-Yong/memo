@@ -8,6 +8,7 @@ import { cx } from '../utils/className';
 import { useHocuspocusProvider } from '../hooks/useHocuspocusProvider';
 import { useAtomValue } from 'jotai';
 import { extensions } from '@suyong/memo-core';
+import Color from 'color';
 
 export interface EditorProps {
   id: string;
@@ -36,18 +37,18 @@ const Editor = ({ id }: EditorProps) => {
           const cursor = document.createElement('span');
           cursor.classList.add('collaboration-cursor__caret');
           cursor.style.setProperty('--color', user.color);
+          const c = Color(user.color);
+          if (c.isDark()) cursor.classList.add('dark-color');
 
           const container = document.createElement('span');
           container.classList.add('collaboration-cursor__container');
 
           const label = document.createElement('div');
           label.classList.add('collaboration-cursor__label');
-          label.style.setProperty('--color', user.color);
 
           const profile = document.createElement('img');
           profile.classList.add('collaboration-cursor__profile');
           profile.src = user.profile;
-          profile.style.setProperty('--color', user.color);
 
           label.insertBefore(document.createTextNode(user.name), null);
           container.insertBefore(profile, null);

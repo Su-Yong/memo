@@ -39,7 +39,7 @@ const DropDown = <T extends DropDownItem>({
           className={`
             absolute right-0 mt-2
             z-10
-            min-w-[120px] origin-top-right rounded-lg bg-white shadow-xl
+            min-w-[120px] origin-top-right rounded-lg bg-white dark:bg-black shadow-xl
           `}
         >
           {data.map((item) => (
@@ -49,8 +49,8 @@ const DropDown = <T extends DropDownItem>({
                   className={cx(
                     'w-full flex justify-start items-center gap-2 rounded-md px-3 py-2 text-base',
                     'transition-colors duration-200',
-                    active && 'bg-gray-200',
-                    !active && 'bg-gray-100',
+                    active && 'bg-gray-200 dark:bg-gray-800',
+                    !active && 'bg-gray-100 dark:bg-gray-900',
                     item.className,
                   )}
                   onClick={() => onClick?.(item)}

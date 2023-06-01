@@ -148,53 +148,22 @@ html, body, #root {
 }
 
 .collaboration-cursor__caret {
-  position: relative;
-  margin-left: -1px;
-  margin-right: -1px;
-  border-color: var(--color);
-  border-left: 1px solid var(--color);
-  border-right: 1px solid var(--color);
-  word-break: normal;
-  pointer-events: none;
+  @apply relative mx-[-1px] border-[var(--color)] border-x-[1px] pointer-events-none break-normal;
 }
 .collaboration-cursor__container {
-  position: absolute;
-  top: -1.4rem;
-  left: -1px;
+  @apply absolute top-[-1.7rem] left-[-1px] w-max h-[1.4rem]
+    pointer-events-none select-none whitespace-nowrap
+    flex justify-start items-center gap-1
+    p-[0.2rem] pr-[0.4rem] rounded-full text-sm rounded-bl-[0]
+    shadow-md bg-[var(--color)];
+}
+.collaboration-cursor__label {
+  @apply font-bold text-black;
+}
 
-  width: max-content;
-  height: 1.4rem;
-
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1rem;
-
-  pointer-events: none;
-  user-select: none;
-  white-space: nowrap;
-
-  display: flex;
-  flex-flow: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 4px;
-
-  background-color: var(--color);
-  padding: 0.2rem;
-  border-radius: 4px 4px 4px 0;
+.dark-color > .collaboration-cursor__label {
+  @apply text-white;
 }
 .collaboration-cursor__profile {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0;
-  user-select: none;
-  object-fit: cover;
-}
-
-.dark .collaboration-cursor__caret {
-  border-left: 1px solid theme('colors.gray.100');
-  border-right: 1px solid theme('colors.gray.100');
-}
-.dark .collaboration-cursor__label {
-  color: theme('colors.gray.100');
+  @apply w-[1rem] h-[1rem] rounded-full select-none object-cover;
 }

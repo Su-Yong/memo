@@ -23,7 +23,6 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
   );
 
   const [provider] = useHocuspocusProvider(memoId);
-
   const attachedUsers = useAttachedUsers(provider);
 
   const onClick = useCallback(() => {
