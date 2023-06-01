@@ -29,9 +29,11 @@
     "rollup-plugin-dts": "^5.3.0"
   },
   "peerDependencies": {
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "@tiptap/core": "^2.0.0",
+    "@tiptap/pm": "^2.0.0"
   },
   "dependencies": {
-    "@tiptap/starter-kit": "^2.0.3"
+    "@tiptap/starter-kit": "^2.0.0"
   }
 }

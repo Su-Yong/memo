@@ -19,7 +19,7 @@ const configs = [
         format: 'umd',
       },
     ],
-    external: ['zod'],
+    external: ['zod', '@tiptap/core', '@tiptap/pm', '@tiptap/starter-kit'],
     plugins: [
       typescript({
         tsconfig: './tsconfig.json',

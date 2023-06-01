@@ -7,6 +7,7 @@
     "dev": "concurrently --kill-others \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm run dev -w @suyong/memo-frontend",
     "dev:backend": "npm run dev -w @suyong/memo-backend",
+    "dev:core": "npm run dev -w @suyong/memo-core",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
