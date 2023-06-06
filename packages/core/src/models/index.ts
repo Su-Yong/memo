@@ -5,3 +5,4 @@ export * from './User';
 export * from './Workspace';
 export * from './FileMetadata';
 export * from './Memo';
+export * from './Auth';
