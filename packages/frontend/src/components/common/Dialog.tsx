@@ -47,10 +47,15 @@ const Dialog = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0 -translate-y-4"
             >
-              <BaseDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-5 text-left align-middle transition-all">
+              <BaseDialog.Panel
+                className={`
+                  w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-900
+                  p-5 text-left align-middle transition-all
+                `}
+              >
                 <BaseDialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100"
                 >
                   {title}
                 </BaseDialog.Title>

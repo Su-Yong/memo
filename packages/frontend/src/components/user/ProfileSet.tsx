@@ -14,7 +14,7 @@ const ProfileSet = ({
   return (
     <div {...props} className={cx('flex justify-start items-center', props.className)}>
       {users?.slice(0, limit).map((user, index) => (
-        <div className={'h-full aspect-[0.5]'}>
+        <div key={user.id} className={'h-full aspect-[0.5]'}>
           <Profile
             key={index}
             user={user}

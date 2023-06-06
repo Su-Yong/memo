@@ -40,7 +40,7 @@ const MemoTabItem = ({ memoId, selected }: MemoTabItemProps) => {
       className={cx(
         `
           w-fit min-w-fit flex flex-row justify-between items-center gap-2
-          pl-3 pr-1 py-1 bg-gray-50 rounded-md shadow-sm dark:bg-gray-950
+          pl-3 pr-1 py-1 bg-gray-50 rounded-md shadow-sm dark:bg-gray-800
           select-none cursor-pointer truncate
         `,
         !selected && 'text-gray-900 dark:text-gray-100',

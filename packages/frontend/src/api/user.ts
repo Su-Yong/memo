@@ -3,9 +3,19 @@ import axios from './config';
 
 export const loginUser = async (email: string, password: string): Promise<{
   accessToken: string;
+  refreshToken: string;
   user: UserRequest;
 }> => {
   const response = await axios.post('/users/login', { email, password });
+
+  return response.data;
+};
+export const refreshUser = async (refreshToken: string): Promise<{
+  accessToken: string;
+  refreshToken: string;
+  user: UserRequest;
+}> => {
+  const response = await axios.post('/users/refresh', { refreshToken });
 
   return response.data;
 };

@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai';
-import { ACCESS_TOKEN } from '../store/auth';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../store/auth';
 import { useRef } from 'react';
 import { loginUser } from '../api/user';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const setAccessToken = useSetAtom(ACCESS_TOKEN);
+  const setRefreshToken = useSetAtom(REFRESH_TOKEN);
 
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -24,6 +25,7 @@ const LoginPage = () => {
     const newToken = await loginUser(email, password);
 
     setAccessToken(newToken.accessToken);
+    setRefreshToken(newToken.refreshToken);
 
     navigate('/', { replace: true });
   });

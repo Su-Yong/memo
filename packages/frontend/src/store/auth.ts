@@ -8,6 +8,7 @@ import { atomWithCache } from 'jotai-cache';
 import { loadableWithDefault } from '../utils/loadableWithDefault';
 
 export const ACCESS_TOKEN = atomWithStorage<string>('access-token', '');
+export const REFRESH_TOKEN = atomWithStorage<string>('refresh-token', '');
 export const [CLIENT_USER] = atomsWithQuery(
   (get) => ({
     queryKey: ['client-user', get(ACCESS_TOKEN)],
