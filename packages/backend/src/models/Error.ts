@@ -37,6 +37,10 @@ export class CommonError extends Error implements HttpError {
   static AUTH_INVALID_TOKEN(status?: number, msg?: string): CommonError { return {} as any }
   @error(400, 'Token is expired')
   static AUTH_EXPIRED_TOKEN(status?: number, msg?: string): CommonError { return {} as any }
+  @error(400, 'Token is not refresh token')
+  static AUTH_NOT_REFRESH_TOKEN(status?: number, msg?: string): CommonError { return {} as any }
+  @error(400, 'Token is not access token')
+  static AUTH_NOT_ACCESS_TOKEN(status?: number, msg?: string): CommonError { return {} as any }
 
   // users
   @error(407, 'User is already registered')
