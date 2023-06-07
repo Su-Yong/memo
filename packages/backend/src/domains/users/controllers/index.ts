@@ -4,6 +4,7 @@ import { loginUser } from './loginUser';
 import { refreshUser } from './refreshUser';
 import { updateUser } from './updateUser';
 import { getUser } from './getUser';
+import { checkCanRegisterUser } from './checkUser';
 
 export const userRouter = Router({ mergeParams: true });
 
@@ -14,3 +15,4 @@ userRouter.patch('/:email', updateUser);
 userRouter.get('/:email', getUser);
 userRouter.post('/login', loginUser);
 userRouter.post('/refresh', refreshUser);
+userRouter.post('/:email/check', checkCanRegisterUser);
