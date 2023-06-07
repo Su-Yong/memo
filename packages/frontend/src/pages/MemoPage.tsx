@@ -6,8 +6,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchWorkspace } from '../api/workspace';
 import { useCallback, useState } from 'react';
 import { uploadFile } from '../api/file';
-import { useAtom, useAtomValue } from 'jotai';
-import { CLIENT_USER } from '../store/auth';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { ACCESS_TOKEN, CLIENT_USER, REFRESH_TOKEN } from '../store/auth';
 import { updateUser } from '../api/user';
 import { ChangeEvent } from 'react';
 import MemoList from '../containers/MemoList';
@@ -15,11 +15,17 @@ import Spinner from '../components/common/Spinner';
 import { SELECTED_MEMO_ID } from '../store/memo';
 import { THEME_MODE } from '../store/preference';
 import { WorkspaceResponse as Workspace } from '@suyong/memo-core';
+import { useNavigate } from 'react-router-dom';
 
 const MemoPage = () => {
-  const [themeMode, setThemeMode] = useAtom(THEME_MODE);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const clientUser = useAtomValue(CLIENT_USER);
+  const [themeMode, setThemeMode] = useAtom(THEME_MODE);
+  const setAccessToken = useSetAtom(ACCESS_TOKEN);
+  const setRefreshToken = useSetAtom(REFRESH_TOKEN);
+
   const { data: workspaces } = useQuery(['my-workspaces'], async () => fetchWorkspace());
   const profileMutation = useMutation(async (file: File) => {
     if (!file.type.startsWith('image/')) return;
@@ -53,6 +59,12 @@ const MemoPage = () => {
     else if (themeMode === 'dark') setThemeMode('system');
     else if (themeMode === 'system') setThemeMode('light');
   }, [themeMode]);
+
+  const onLogout = useCallback(() => {
+    setAccessToken('');
+    setRefreshToken('');
+    navigate('/login', { replace: true });
+  }, []);
 
   return (
     <div className={'w-full h-full bg-gray-100 dark:bg-gray-900'}>
@@ -90,6 +102,11 @@ const MemoPage = () => {
               {themeMode === 'system' && 'brightness_auto'}
               {themeMode === 'dark' && 'dark_mode'}
               {themeMode === 'light' && 'light_mode'}
+            </i>
+          </button>
+          <button className={'relative btn-text btn-icon flex'} onClick={onLogout}>
+            <i className={'material-symbols-outlined icon'}>
+              logout
             </i>
           </button>
           <button className={'relative btn-text btn-icon flex'}>

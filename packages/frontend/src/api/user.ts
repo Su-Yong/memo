@@ -40,3 +40,13 @@ export const updateUser = (async (param1, param2) => {
 
   return response.data;
 }) as UpdateUser;
+
+export const createUser = async (body: UserRequest): Promise<UserResponse> => {
+  const response = await axios.post(`/users/`, body);
+
+  return response.data;
+};
+
+export const checkCanRegisterUser = async (email: string): Promise<void> => {
+  await axios.post(`/users/${email}/check`);
+};

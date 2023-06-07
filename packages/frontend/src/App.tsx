@@ -10,6 +10,7 @@ import { queryClientAtom } from 'jotai-tanstack-query';
 import { useEffect } from 'react';
 import { THEME_MODE } from './store/preference';
 import { useMediaQuery } from './hooks/useMediaQuery';
+import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +55,7 @@ const App = () => {
             />
             <Route path={'/memo'} element={<MemoPage />} />
             <Route path={'/login'} element={<LoginPage />} />
+            <Route path={'/register'} element={<RegisterPage />} />
           </Routes>
         </BrowserRouter>
       </HydrateAtoms>

@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../store/auth';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { loginUser } from '../api/user';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/common/Spinner';
@@ -17,6 +17,7 @@ const LoginPage = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
+  /* defines */
   const { mutateAsync, isLoading, error } = useMutation(async ({
     email,
     password,
@@ -30,6 +31,7 @@ const LoginPage = () => {
     navigate('/', { replace: true });
   });
 
+  /* methods, callbacks */
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
@@ -38,6 +40,9 @@ const LoginPage = () => {
 
     await mutateAsync({ email, password });
   };
+  const onRegister = useCallback(() => {
+    navigate('/register');
+  }, []);
 
   return (
     <div className={'w-full h-full container mx-auto p-8 flex flex-col gap-2 justify-center items-center'}>
@@ -69,29 +74,38 @@ const LoginPage = () => {
             className={'input'}
           />
         </div>
-        <button
-          type={'submit'}
-          className={cx(
-            'relative flex self-end items-center gap-1',
-            isLoading ? 'btn-disabled' : 'btn-primary'
-          )}
-        >
-          {
-            isLoading
-              ? <Spinner className={'w-4 h-4 stroke-gray-100 dark:stroke-gray-900'} />
-              : <i className={'material-symbols-outlined icon text-base'}>
-                login
-              </i>
-          }
-          로그인
-        </button>
+        <div className={'w-full flex justify-between items-center'}>
+          <button
+            type={'button'}
+            className={'btn-text flex self-end items-center gap-1'}
+            onClick={onRegister}
+          >
+            회원가입
+          </button>
+          <button
+            type={'submit'}
+            className={cx(
+              'relative flex self-end items-center gap-1',
+              isLoading ? 'btn-disabled' : 'btn-primary'
+            )}
+          >
+            {
+              isLoading
+                ? <Spinner className={'w-4 h-4 stroke-gray-100 dark:stroke-gray-900'} />
+                : <i className={'material-symbols-outlined icon text-base'}>
+                  login
+                </i>
+            }
+            로그인
+          </button>
+        </div>
       </form>
       <ErrorDialog
         error={error}
         title={'로그인에 실패하였습니다'}
       />
     </div>
-  )
+  );
 };
 
 export default LoginPage;

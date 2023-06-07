@@ -52,7 +52,7 @@
 
   .input {
     @apply outline-none bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 rounded-lg ring-primary-500 ring-0
-      py-3 px-2 invalid:ring-error-500
+      py-3 px-2 invalid:ring-error-500 invalid:ring-2
       transition-all ease-out
       hover:bg-gray-200 dark:hover:bg-gray-800
       focus:ring-2;
